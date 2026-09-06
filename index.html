@@ -329,6 +329,52 @@
       color:#a00000;
     }
 
+    /* UPI BOX */
+
+    .upi-box{
+      margin:15px 0;
+      padding:16px;
+      background:#fff8e1;
+      border:1px solid #d4af37;
+      border-radius:14px;
+      text-align:center;
+    }
+
+    .upi-title{
+      color:#4b1020;
+      font-size:18px;
+      font-weight:bold;
+      margin-bottom:8px;
+    }
+
+    .upi-id{
+      display:block;
+      color:#4b1020;
+      font-size:16px;
+      font-weight:bold;
+      margin:8px 0 12px;
+      word-break:break-all;
+    }
+
+    .upi-button{
+      width:100%;
+      border:0;
+      background:#4b1020;
+      color:white;
+      padding:13px;
+      border-radius:10px;
+      font-weight:bold;
+      font-size:15px;
+      cursor:pointer;
+    }
+
+    .upi-note{
+      font-size:12px;
+      color:#777;
+      margin-top:9px;
+      line-height:1.4;
+    }
+
     @media(max-width:800px){
       .products{
         grid-template-columns:repeat(2,1fr);
@@ -382,12 +428,10 @@
   </div>
 </header>
 
-
 <section class="hero">
   <h1>Mayuri General Store</h1>
   <p>Quality Products • Best Prices • Easy Ordering</p>
 </section>
-
 
 <section class="section">
 
@@ -435,10 +479,11 @@
 
 </section>
 
-
 <footer>
   <h3>Mayuri General Store</h3>
-  <p style="margin-top:8px;">Thank you for shopping with us ❤️</p>
+  <p style="margin-top:8px;">
+    Thank you for shopping with us ❤️
+  </p>
 </footer>
 
 
@@ -450,7 +495,10 @@
 
     <div class="modal-head">
       <h2>🛒 Your Cart</h2>
-      <button class="close" onclick="closeCart()">×</button>
+
+      <button class="close" onclick="closeCart()">
+        ×
+      </button>
     </div>
 
     <div id="cartItems"></div>
@@ -477,7 +525,10 @@
 
     <div class="modal-head">
       <h2>📦 Checkout</h2>
-      <button class="close" onclick="closeCheckout()">×</button>
+
+      <button class="close" onclick="closeCheckout()">
+        ×
+      </button>
     </div>
 
     <div id="message" class="message"></div>
@@ -506,16 +557,59 @@
         required
       ></textarea>
 
-      <div class="total">
-        <span>Order Total</span>
-        <span>₹<span id="checkoutTotal">0</span></span>
+
+      <!-- UPI PAYMENT -->
+
+      <div class="upi-box">
+
+        <div class="upi-title">
+          💳 Pay via UPI
+        </div>
+
+        <p style="font-size:13px;color:#555;">
+          UPI ID
+        </p>
+
+        <span class="upi-id">
+          8962200566-2@ibl
+        </span>
+
+        <button
+          type="button"
+          class="upi-button"
+          onclick="payViaUPI()">
+
+          💰 Pay ₹<span id="upiAmount">0</span> via UPI
+
+        </button>
+
+        <p class="upi-note">
+          UPI payment karne ke baad neeche
+          <b>Place Order & WhatsApp</b> button dabayein.
+          Payment ko store owner manually verify karega.
+        </p>
+
       </div>
+
+
+      <div class="total">
+
+        <span>Order Total</span>
+
+        <span>
+          ₹<span id="checkoutTotal">0</span>
+        </span>
+
+      </div>
+
 
       <button
         id="placeOrder"
         class="checkout"
         type="submit">
+
         🟢 Place Order & WhatsApp
+
       </button>
 
     </form>
@@ -534,8 +628,15 @@
 const SUPABASE_URL =
   "https://inbhwgksryupmbujzciw.supabase.co";
 
+/*
+  IMPORTANT:
+  Apni existing Supabase Publishable key
+  yahan khud paste karo.
+*/
+
 const SUPABASE_ANON_KEY =
   "sb_publishable_obSRAPVUsZZeInZ-RhMq3A_43nx9IPw";
+
 
 const supabaseClient =
   window.supabase.createClient(
@@ -548,7 +649,15 @@ const supabaseClient =
    STORE SETTINGS
 ========================================= */
 
-const WHATSAPP_NUMBER = "918223837338";
+const WHATSAPP_NUMBER =
+  "918223837338";
+
+const UPI_ID =
+  "8962200566-2@ibl";
+
+const UPI_NAME =
+  "Mayuri General Store";
+
 
 let products = [];
 
@@ -558,7 +667,7 @@ let currentCategory = "All";
 
 
 /* =========================================
-   LOAD PRODUCTS FROM SUPABASE
+   LOAD PRODUCTS
 ========================================= */
 
 async function loadProducts(){
@@ -686,7 +795,9 @@ function renderProducts(){
           <button
             class="add"
             onclick="addToCart('${product.id}')">
+
             🛒 Add to Cart
+
           </button>
 
         </div>
@@ -718,7 +829,7 @@ function setCategory(category,button){
 
 
 /* =========================================
-   ADD CART
+   ADD TO CART
 ========================================= */
 
 function addToCart(id){
@@ -745,16 +856,20 @@ function addToCart(id){
   }else{
 
     cart.push({
+
       id:product.id,
+
       name:product.name,
+
       price:Number(product.price),
+
       quantity:1
+
     });
 
   }
 
   updateCart();
-
 }
 
 
@@ -827,6 +942,7 @@ function updateCart(){
     .textContent = count;
 
   renderCart();
+
 }
 
 
@@ -872,7 +988,9 @@ function renderCart(){
                 −
               </button>
 
-              <span>${item.quantity}</span>
+              <span>
+                ${item.quantity}
+              </span>
 
               <button
                 onclick="changeQuantity('${item.id}',1)">
@@ -882,7 +1000,9 @@ function renderCart(){
               <button
                 class="remove"
                 onclick="removeItem('${item.id}')">
+
                 Remove
+
               </button>
 
             </div>
@@ -904,6 +1024,10 @@ function renderCart(){
 
   document.getElementById("checkoutTotal")
     .textContent = getTotal();
+
+  document.getElementById("upiAmount")
+    .textContent = getTotal();
+
 }
 
 
@@ -950,6 +1074,10 @@ function openCheckout(){
 
   document.getElementById("checkoutTotal")
     .textContent = getTotal();
+
+  document.getElementById("upiAmount")
+    .textContent = getTotal();
+
 }
 
 
@@ -962,207 +1090,110 @@ function closeCheckout(){
 
 
 /* =========================================
+   UPI PAYMENT
+========================================= */
+
+function payViaUPI(){
+
+  const amount = getTotal();
+
+  if(!amount || amount <= 0){
+
+    alert("🛒 Pehle product cart me add karo.");
+
+    return;
+  }
+
+
+  const upiUrl =
+    "upi://pay" +
+    "?pa=" + encodeURIComponent(UPI_ID) +
+    "&pn=" + encodeURIComponent(UPI_NAME) +
+    "&am=" + encodeURIComponent(amount.toFixed(2)) +
+    "&cu=INR";
+
+
+  window.location.href = upiUrl;
+
+}
+
+
+/* =========================================
    PLACE ORDER
 ========================================= */
 
 document
   .getElementById("checkoutForm")
-  .addEventListener("submit",async function(e){
+  .addEventListener(
+    "submit",
+    async function(e){
 
-    e.preventDefault();
+      e.preventDefault();
 
 
-    if(!cart.length){
+      if(!cart.length){
 
-      alert("Cart empty hai.");
+        alert("Cart empty hai.");
 
-      return;
-    }
+        return;
+      }
 
 
-    const name =
-      document.getElementById("name")
-        .value.trim();
+      const name =
+        document.getElementById("name")
+          .value.trim();
 
-    const phone =
-      document.getElementById("phone")
-        .value.trim();
 
-    const address =
-      document.getElementById("address")
-        .value.trim();
+      const phone =
+        document.getElementById("phone")
+          .value.trim();
 
-    const button =
-      document.getElementById("placeOrder");
 
-    const messageBox =
-      document.getElementById("message");
+      const address =
+        document.getElementById("address")
+          .value.trim();
 
 
-    if(!/^[0-9]{10}$/.test(phone)){
+      const button =
+        document.getElementById("placeOrder");
 
-      messageBox.className =
-        "message error";
 
-      messageBox.textContent =
-        "❌ Valid 10-digit mobile number enter karo.";
+      const messageBox =
+        document.getElementById("message");
 
-      return;
-    }
 
+      if(!/^[0-9]{10}$/.test(phone)){
 
-    button.disabled = true;
+        messageBox.className =
+          "message error";
 
-    button.textContent =
-      "⏳ Saving Order...";
+        messageBox.textContent =
+          "❌ Valid 10-digit mobile number enter karo.";
 
+        return;
+      }
 
-    const total = getTotal();
 
-
-    const items =
-      cart.map(item => ({
-        product_id:item.id,
-        name:item.name,
-        price:item.price,
-        quantity:item.quantity,
-        subtotal:item.price * item.quantity
-      }));
-
-
-    try{
-
-      const {data,error} =
-        await supabaseClient
-          .from("orders")
-          .insert([{
-
-            customer_name:name,
-
-            phone:phone,
-
-            address:address,
-
-            total:total,
-
-            items:items,
-
-            status:"Pending"
-
-          }])
-          .select("id")
-          .single();
-
-
-      if(error) throw error;
-
-
-      const orderId = data.id;
-
-
-      /* WhatsApp message */
-
-      let text =
-`🛍️ *Mayuri General Store*
-
-📦 *Order ID:* #${orderId}
-
-👤 *Customer:* ${name}
-📱 *Phone:* ${phone}
-
-*Products:*`;
-
-
-      cart.forEach(item => {
-
-        text +=
-`\n• ${item.name} × ${item.quantity} = ₹${item.price * item.quantity}`;
-
-      });
-
-
-      text +=
-`\n\n💰 *Total: ₹${total}*
-
-📍 *Address:*
-${address}
-
-Please confirm my order. Thank you!`;
-
-
-      const whatsapp =
-        "https://wa.me/" +
-        WHATSAPP_NUMBER +
-        "?text=" +
-        encodeURIComponent(text);
-
-
-      messageBox.className =
-        "message success";
-
-      messageBox.textContent =
-        "✅ Order saved! WhatsApp opening...";
-
-
-      cart = [];
-
-      updateCart();
-
-      document
-        .getElementById("checkoutForm")
-        .reset();
-
-
-      setTimeout(function(){
-
-        window.location.href = whatsapp;
-
-      },700);
-
-
-    }catch(error){
-
-      console.error(error);
-
-      messageBox.className =
-        "message error";
-
-      messageBox.textContent =
-        "❌ Order save nahi hua: " +
-        (error.message || "Unknown error");
-
-
-      button.disabled = false;
+      button.disabled = true;
 
       button.textContent =
-        "🟢 Place Order & WhatsApp";
-    }
-
-  });
+        "⏳ Saving Order...";
 
 
-/* =========================================
-   BASIC HTML SAFETY
-========================================= */
-
-function safe(value){
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
+      const total =
+        getTotal();
 
 
-/* =========================================
-   START WEBSITE
-========================================= */
+      const items =
+        cart.map(item => ({
 
-loadProducts();
+          product_id:item.id,
 
-</script>
+          name:item.name,
 
-</body>
-</html>
+          price:item.price,
+
+          quantity:item.quantity,
+
+          subtotal:
+  
