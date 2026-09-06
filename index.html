@@ -1,1203 +1,2064 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#4b1020">
-<title>Mayuri General Store</title>
-
-<!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#fffaf7;
-  color:#2d1b1b;
-}
-
-button,input,textarea,select{
-  font:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
-header{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:#4b1020;
-  color:white;
-  padding:14px 18px;
-  box-shadow:0 4px 15px rgba(0,0,0,.15);
-}
-
-.header-inner{
-  max-width:1150px;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-}
-
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.logo-icon{
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  background:#d4af37;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:23px;
-}
-
-.logo h1{
-  font-size:20px;
-}
-
-.logo small{
-  display:block;
-  color:#f5dca2;
-  margin-top:2px;
-}
-
-.cart-btn{
-  border:0;
-  background:white;
-  color:#4b1020;
-  padding:10px 15px;
-  border-radius:25px;
-  font-weight:bold;
-  position:relative;
-}
-
-.cart-count{
-  position:absolute;
-  top:-7px;
-  right:-5px;
-  min-width:22px;
-  height:22px;
-  padding:2px 5px;
-  border-radius:50%;
-  background:#d4af37;
-  color:#4b1020;
-  font-size:12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.hero{
-  max-width:1150px;
-  margin:20px auto;
-  padding:32px 20px;
-}
-
-.hero-box{
-  background:linear-gradient(135deg,#4b1020,#741d35);
-  color:white;
-  border-radius:25px;
-  padding:35px 25px;
-  text-align:center;
-  box-shadow:0 12px 30px rgba(75,16,32,.2);
-}
-
-.hero-box h2{
-  font-size:32px;
-  margin-bottom:10px;
-}
-
-.hero-box p{
-  color:#ffe9b7;
-  margin-bottom:20px;
-}
-
-.shop-btn{
-  display:inline-block;
-  background:#d4af37;
-  color:#4b1020;
-  border:0;
-  padding:12px 22px;
-  border-radius:25px;
-  font-weight:bold;
-}
-
-.container{
-  max-width:1150px;
-  margin:auto;
-  padding:0 18px 50px;
-}
-
-.search-box{
-  margin-bottom:18px;
-}
-
-.search-box input{
-  width:100%;
-  padding:14px 18px;
-  border:1px solid #e4cfcf;
-  border-radius:15px;
-  outline:none;
-  background:white;
-}
-
-.categories{
-  display:flex;
-  gap:9px;
-  overflow-x:auto;
-  padding-bottom:8px;
-  margin-bottom:25px;
-}
-
-.category{
-  flex:0 0 auto;
-  border:1px solid #d4af37;
-  background:white;
-  color:#4b1020;
-  padding:10px 15px;
-  border-radius:22px;
-  font-weight:bold;
-}
-
-.category.active{
-  background:#4b1020;
-  color:white;
-}
-
-.section-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
-}
-
-.section-title h2{
-  color:#4b1020;
-}
-
-.product-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-  gap:18px;
-}
-
-.product-card{
-  background:white;
-  border-radius:20px;
-  overflow:hidden;
-  box-shadow:0 5px 20px rgba(0,0,0,.08);
-  border:1px solid #f0dfdf;
-  transition:.2s;
-}
-
-.product-card:hover{
-  transform:translateY(-3px);
-}
-
-.product-image{
-  height:230px;
-  background:#f8eef0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-}
-
-.product-image img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.eyeliner-art{
-  width:180px;
-  height:55px;
-  position:relative;
-  transform:rotate(-15deg);
-}
-
-.eyeliner-body{
-  position:absolute;
-  left:20px;
-  top:17px;
-  width:125px;
-  height:20px;
-  background:#171717;
-  border-radius:10px;
-}
-
-.eyeliner-cap{
-  position:absolute;
-  left:0;
-  top:13px;
-  width:45px;
-  height:28px;
-  background:#222;
-  border-radius:8px 2px 2px 8px;
-}
-
-.eyeliner-tip{
-  position:absolute;
-  right:5px;
-  top:19px;
-  width:30px;
-  height:10px;
-  background:#050505;
-  clip-path:polygon(0 0,100% 50%,0 100%);
-}
-
-.product-info{
-  padding:17px;
-}
-
-.badge{
-  display:inline-block;
-  background:#ffe8a8;
-  color:#4b1020;
-  padding:5px 9px;
-  border-radius:12px;
-  font-size:12px;
-  font-weight:bold;
-  margin-bottom:9px;
-}
-
-.product-info h3{
-  margin-bottom:7px;
-  color:#4b1020;
-}
-
-.product-info p{
-  color:#777;
-  font-size:14px;
-  line-height:1.4;
-  min-height:40px;
-}
-
-.price-row{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin:12px 0;
-}
-
-.price{
-  font-size:22px;
-  font-weight:bold;
-  color:#4b1020;
-}
-
-.old-price{
-  text-decoration:line-through;
-  color:#999;
-}
-
-.add-btn{
-  width:100%;
-  border:0;
-  background:#4b1020;
-  color:white;
-  padding:12px;
-  border-radius:13px;
-  font-weight:bold;
-}
-
-.add-btn:disabled{
-  background:#aaa;
-  cursor:not-allowed;
-}
-
-.loading{
-  text-align:center;
-  padding:40px;
-  color:#777;
-}
-
-.empty{
-  text-align:center;
-  padding:35px;
-  color:#777;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  z-index:2000;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:15px;
-}
-
-.modal.show{
-  display:flex;
-}
-
-.modal-box{
-  width:100%;
-  max-width:520px;
-  max-height:92vh;
-  overflow-y:auto;
-  background:white;
-  border-radius:22px;
-  padding:20px;
-  position:relative;
-}
-
-.modal-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:15px;
-}
-
-.modal-head h2{
-  color:#4b1020;
-}
-
-.close{
-  width:35px;
-  height:35px;
-  border:0;
-  border-radius:50%;
-  background:#f3e5e5;
-  color:#4b1020;
-  font-size:20px;
-}
-
-.cart-item{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:14px 0;
-  border-bottom:1px solid #eee;
-}
-
-.cart-name{
-  font-weight:bold;
-  color:#4b1020;
-}
-
-.cart-price{
-  color:#777;
-  margin-top:5px;
-  font-size:14px;
-}
-
-.quantity{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.quantity button{
-  width:32px;
-  height:32px;
-  border:0;
-  border-radius:8px;
-  background:#4b1020;
-  color:white;
-  font-size:18px;
-}
-
-.delete-btn{
-  border:0;
-  background:#ffe5e5;
-  border-radius:8px;
-  padding:8px;
-}
-
-.total-box{
-  display:flex;
-  justify-content:space-between;
-  font-size:20px;
-  font-weight:bold;
-  margin:18px 0;
-  color:#4b1020;
-}
-
-.primary-btn,
-.secondary-btn{
-  width:100%;
-  border:0;
-  padding:13px;
-  border-radius:13px;
-  font-weight:bold;
-  margin-top:9px;
-}
-
-.primary-btn{
-  background:#4b1020;
-  color:white;
-}
-
-.secondary-btn{
-  background:#f5e8e8;
-  color:#4b1020;
-}
-
-.form-group{
-  margin-bottom:12px;
-}
-
-.form-group label{
-  display:block;
-  margin-bottom:6px;
-  font-weight:bold;
-  color:#4b1020;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select{
-  width:100%;
-  padding:12px;
-  border:1px solid #ddd;
-  border-radius:11px;
-  outline:none;
-}
-
-.form-group textarea{
-  min-height:85px;
-  resize:vertical;
-}
-
-.two{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.summary{
-  background:#fff8e1;
-  border:1px solid #e3c76d;
-  border-radius:13px;
-  padding:12px;
-  margin:15px 0;
-}
-
-.summary-row{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  margin:5px 0;
-}
-
-.upi-box{
-  margin:15px 0;
-  padding:15px;
-  background:#fff8e1;
-  border:1px solid #d4af37;
-  border-radius:14px;
-  text-align:center;
-}
-
-.upi-id{
-  font-weight:bold;
-  color:#4b1020;
-  margin:8px 0;
-  word-break:break-all;
-}
-
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:25px;
-  transform:translateX(-50%) translateY(100px);
-  background:#222;
-  color:white;
-  padding:12px 18px;
-  border-radius:25px;
-  z-index:5000;
-  opacity:0;
-  transition:.3s;
-  max-width:90%;
-  text-align:center;
-}
-
-.toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-
-footer{
-  background:#4b1020;
-  color:white;
-  text-align:center;
-  padding:25px 15px;
-}
-
-footer p{
-  color:#f5dca2;
-  margin-top:5px;
-}
-
-@media(max-width:600px){
-  .hero-box h2{
-    font-size:26px;
-  }
-
-  .product-grid{
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-  }
-
-  .product-image{
-    height:175px;
-  }
-
-  .product-info{
-    padding:12px;
-  }
-
-  .product-info h3{
-    font-size:16px;
-  }
-
-  .product-info p{
-    font-size:12px;
-  }
-
-  .price{
-    font-size:18px;
-  }
-
-  .two{
-    grid-template-columns:1fr;
-  }
-}
-
-@media(max-width:380px){
-  .product-grid{
-    grid-template-columns:1fr;
-  }
-
-  .product-image{
-    height:220px;
-  }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Mayuri General Store</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff7f9;
+      color: #2d1b22;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #4b1020, #8d2348);
+      color: white;
+      padding: 18px 15px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.18);
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #fff;
+      color: #8d2348;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .store-name {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .store-subtitle {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-top: 3px;
+    }
+
+    .cart-btn {
+      background: #fff;
+      color: #4b1020;
+      border: none;
+      border-radius: 14px;
+      padding: 11px 14px;
+      font-weight: 700;
+      position: relative;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      background: #e53935;
+      color: #fff;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* HERO */
+    .hero {
+      max-width: 1100px;
+      margin: 18px auto;
+      padding: 28px 20px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #ffe1ea, #fff3d7);
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(90,20,45,0.08);
+    }
+
+    .hero h1 {
+      color: #4b1020;
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      color: #69434e;
+      line-height: 1.5;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 9px 15px;
+      border-radius: 30px;
+      background: #4b1020;
+      color: white;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    /* SEARCH */
+    .search-wrap {
+      max-width: 1100px;
+      margin: 15px auto;
+      padding: 0 15px;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 15px 17px;
+      border: 1px solid #e3cbd2;
+      border-radius: 16px;
+      outline: none;
+      background: #fff;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+    }
+
+    #searchInput:focus {
+      border-color: #8d2348;
+    }
+
+    /* CATEGORIES */
+    .categories {
+      max-width: 1100px;
+      margin: 18px auto;
+      padding: 0 15px;
+      display: flex;
+      gap: 9px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .categories::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category {
+      flex: 0 0 auto;
+      border: 1px solid #e3cbd2;
+      background: #fff;
+      color: #4b1020;
+      padding: 10px 14px;
+      border-radius: 30px;
+      font-weight: 700;
+    }
+
+    .category.active,
+    .category:hover {
+      background: #4b1020;
+      color: #fff;
+    }
+
+    /* PRODUCTS */
+    .section {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .section-title {
+      font-size: 23px;
+      color: #4b1020;
+      margin-bottom: 15px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 15px;
+    }
+
+    .product-card {
+      background: #fff;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 5px 18px rgba(70,15,35,0.09);
+      border: 1px solid #f0dfe4;
+      transition: transform 0.2s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .product-image {
+      height: 175px;
+      background: linear-gradient(135deg, #f9dce6, #fff0c8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .product-placeholder {
+      width: 105px;
+      height: 105px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .discount {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #d32f2f;
+      color: white;
+      padding: 6px 9px;
+      border-radius: 9px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .product-info {
+      padding: 14px;
+    }
+
+    .product-category {
+      color: #9b6071;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .product-name {
+      color: #4b1020;
+      font-size: 17px;
+      font-weight: 800;
+      margin: 5px 0;
+    }
+
+    .product-description {
+      color: #765861;
+      font-size: 12px;
+      min-height: 30px;
+      line-height: 1.4;
+    }
+
+    .price-row {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .price {
+      font-size: 20px;
+      font-weight: 900;
+      color: #4b1020;
+    }
+
+    .old-price {
+      font-size: 12px;
+      color: #999;
+      text-decoration: line-through;
+    }
+
+    .add-btn {
+      width: 100%;
+      margin-top: 12px;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      background: #4b1020;
+      color: white;
+      font-weight: 800;
+    }
+
+    .add-btn:active {
+      transform: scale(0.98);
+    }
+
+    .out-stock {
+      background: #999;
+    }
+
+    /* EMPTY */
+    .empty {
+      text-align: center;
+      padding: 35px 10px;
+      color: #765861;
+      display: none;
+    }
+
+    /* CART DRAWER */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.48);
+      z-index: 2000;
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      right: -100%;
+      top: 0;
+      height: 100%;
+      width: min(420px, 94%);
+      background: #fff;
+      z-index: 2100;
+      transition: right 0.25s ease;
+      box-shadow: -8px 0 30px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-drawer.open {
+      right: 0;
+    }
+
+    .cart-header {
+      background: #4b1020;
+      color: #fff;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .close-cart {
+      border: none;
+      background: transparent;
+      color: #fff;
+      font-size: 25px;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+
+    .cart-item {
+      border-bottom: 1px solid #eee;
+      padding: 12px 0;
+    }
+
+    .cart-item-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .cart-item-name {
+      font-weight: 800;
+      color: #4b1020;
+    }
+
+    .cart-item-price {
+      font-weight: bold;
+    }
+
+    .qty-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .qty-btn {
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 8px;
+      background: #f1dce3;
+      color: #4b1020;
+      font-weight: 900;
+    }
+
+    .remove-btn {
+      margin-left: auto;
+      border: none;
+      background: transparent;
+      color: #d32f2f;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .cart-bottom {
+      padding: 15px;
+      border-top: 1px solid #eee;
+      background: #fff;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 20px;
+      font-weight: 900;
+      color: #4b1020;
+      margin-bottom: 12px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: #4b1020;
+      color: white;
+      font-weight: 900;
+    }
+
+    /* CHECKOUT */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      width: min(520px, 100%);
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+    }
+
+    .modal-title {
+      color: #4b1020;
+      margin-bottom: 5px;
+      font-size: 23px;
+    }
+
+    .modal-subtitle {
+      color: #765861;
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 5px;
+      color: #4b1020;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #decbd1;
+      border-radius: 12px;
+      outline: none;
+      background: #fff;
+    }
+
+    .field textarea {
+      min-height: 85px;
+      resize: vertical;
+    }
+
+    .order-summary {
+      background: #fff8e1;
+      border: 1px solid #ead59b;
+      padding: 13px;
+      border-radius: 14px;
+      margin: 15px 0;
+    }
+
+    .payment-box {
+      background: #fff8e1;
+      border: 1px solid #d4af37;
+      border-radius: 14px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .upi-id {
+      display: inline-block;
+      background: white;
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: 7px 0;
+      font-weight: bold;
+      word-break: break-all;
+    }
+
+    .pay-btn {
+      width: 100%;
+      border: none;
+      border-radius: 13px;
+      padding: 13px;
+      background: #168a43;
+      color: #fff;
+      font-weight: 900;
+      margin-top: 5px;
+    }
+
+    .submit-order {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: #4b1020;
+      color: #fff;
+      font-weight: 900;
+      margin-top: 5px;
+    }
+
+    .cancel-btn {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      background: white;
+      color: #555;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #2d1b22;
+      color: #fff;
+      padding: 13px 18px;
+      border-radius: 12px;
+      z-index: 5000;
+      opacity: 0;
+      transition: all 0.25s ease;
+      max-width: 90%;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 40px;
+      padding: 28px 15px;
+      background: #4b1020;
+      color: #fff;
+      text-align: center;
+    }
+
+    footer p {
+      margin: 5px 0;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .whatsapp-footer {
+      display: inline-block;
+      margin-top: 10px;
+      background: #25D366;
+      color: white;
+      text-decoration: none;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 500px) {
+      .store-name {
+        font-size: 18px;
+      }
+
+      .hero h1 {
+        font-size: 25px;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .product-image {
+        height: 145px;
+      }
+
+      .product-placeholder {
+        width: 85px;
+        height: 85px;
+        font-size: 40px;
+      }
+
+      .product-info {
+        padding: 11px;
+      }
+
+      .product-name {
+        font-size: 15px;
+      }
+
+      .price {
+        font-size: 18px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-  <div class="header-inner">
-    <div class="logo">
-      <div class="logo-icon">🛍️</div>
-      <div>
-        <h1>Mayuri General Store</h1>
-        <small>Everything you need ❤️</small>
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="logo-box">
+        <div class="logo">M</div>
+
+        <div>
+          <div class="store-name">Mayuri General Store</div>
+          <div class="store-subtitle">Everything you need, all in one place</div>
+        </div>
       </div>
+
+      <button class="cart-btn" onclick="openCart()">
+        🛒 Cart
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
     </div>
+  </header>
 
-    <button class="cart-btn" id="openCartBtn">
-      🛒 Cart
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
-  </div>
-</header>
+  <!-- HERO -->
+  <section class="hero">
+    <h1>🛍️ Welcome to Mayuri General Store</h1>
+    <p>
+      Cosmetics, jewellery, stationery, toys and daily-use products
+      — shop easily from your phone.
+    </p>
 
-<section class="hero">
-  <div class="hero-box">
-    <h2>Welcome to Mayuri General Store 💕</h2>
-    <p>Shop your favourite products easily from your phone.</p>
-    <button class="shop-btn" onclick="document.getElementById('productsSection').scrollIntoView({behavior:'smooth'})">
-      🛍️ Shop Now
-    </button>
-  </div>
-</section>
-
-<main class="container">
-
-  <div class="search-box">
-    <input
-      type="search"
-      id="searchInput"
-      placeholder="🔍 Search products..."
-    >
-  </div>
-
-  <div class="categories" id="categories">
-    <button class="category active" data-category="All">✨ All</button>
-    <button class="category" data-category="Stationery">📚 Stationery</button>
-    <button class="category" data-category="Cosmetics">💄 Cosmetics</button>
-    <button class="category" data-category="Jewellery">💎 Jewellery</button>
-    <button class="category" data-category="Toys">🧸 Toys</button>
-    <button class="category" data-category="General Items">🛒 General Items</button>
-  </div>
-
-  <section id="productsSection">
-    <div class="section-title">
-      <h2>🛍️ Our Products</h2>
-    </div>
-
-    <div id="productsGrid" class="product-grid">
-      <div class="loading">Loading products...</div>
+    <div class="hero-badge">
+      ✨ Easy Ordering • UPI Payment • WhatsApp Support
     </div>
   </section>
 
-</main>
-
-<footer>
-  <h3>Mayuri General Store</h3>
-  <p>Thank you for shopping with us ❤️</p>
-</footer>
-
-
-<!-- CART MODAL -->
-<div class="modal" id="cartModal">
-  <div class="modal-box">
-
-    <div class="modal-head">
-      <h2>🛒 Your Cart</h2>
-      <button class="close" onclick="closeCart()">×</button>
-    </div>
-
-    <div id="cartItems"></div>
-
-    <div class="total-box">
-      <span>Total</span>
-      <span id="cartTotal">₹0</span>
-    </div>
-
-    <button class="primary-btn" id="checkoutBtn">
-      💳 Proceed to Checkout
-    </button>
-
-    <button class="secondary-btn" onclick="closeCart()">
-      Continue Shopping
-    </button>
-
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="🔎 Search products..."
+      oninput="renderProducts()"
+    >
   </div>
-</div>
 
+  <!-- CATEGORIES -->
+  <div class="categories">
+    <button class="category active" onclick="setCategory('All', this)">
+      🏪 All
+    </button>
 
-<!-- CHECKOUT MODAL -->
-<div class="modal" id="checkoutModal">
-  <div class="modal-box">
+    <button class="category" onclick="setCategory('Stationery', this)">
+      ✏️ Stationery
+    </button>
 
-    <div class="modal-head">
-      <h2>📦 Checkout</h2>
-      <button class="close" onclick="closeCheckout()">×</button>
+    <button class="category" onclick="setCategory('Cosmetics', this)">
+      💄 Cosmetics
+    </button>
+
+    <button class="category" onclick="setCategory('Artificial Jewellery', this)">
+      💍 Jewellery
+    </button>
+
+    <button class="category" onclick="setCategory('Toys', this)">
+      🧸 Toys
+    </button>
+
+    <button class="category" onclick="setCategory('General Items', this)">
+      🛒 General
+    </button>
+  </div>
+
+  <!-- PRODUCTS -->
+  <section class="section">
+    <h2 class="section-title">✨ Our Products</h2>
+
+    <div class="products-grid" id="productsGrid"></div>
+
+    <div class="empty" id="emptyProducts">
+      😔 No products found.
+    </div>
+  </section>
+
+  <!-- CART OVERLAY -->
+  <div class="overlay" id="cartOverlay" onclick="closeCart()"></div>
+
+  <!-- CART DRAWER -->
+  <aside class="cart-drawer" id="cartDrawer">
+
+    <div class="cart-header">
+      <h2>🛒 Your Cart</h2>
+
+      <button class="close-cart" onclick="closeCart()">×</button>
     </div>
 
-    <div class="summary">
-      <h3 style="color:#4b1020;margin-bottom:8px;">Order Summary</h3>
-      <div id="checkoutSummary"></div>
+    <div class="cart-items" id="cartItems"></div>
 
-      <div class="summary-row" style="font-weight:bold;border-top:1px solid #e3c76d;padding-top:8px;margin-top:8px;">
+    <div class="cart-bottom">
+      <div class="total-row">
         <span>Total</span>
-        <span id="checkoutTotal">₹0</span>
+        <span id="cartTotal">₹0</span>
       </div>
+
+      <button class="checkout-btn" onclick="openCheckout()">
+        Proceed to Checkout →
+      </button>
     </div>
 
-    <form id="orderForm">
+  </aside>
 
-      <div class="form-group">
-        <label for="customerName">Full Name *</label>
-        <input
-          id="customerName"
-          type="text"
-          required
-          maxlength="100"
-          placeholder="Enter your name"
-        >
-      </div>
+  <!-- CHECKOUT MODAL -->
+  <div class="modal" id="checkoutModal">
 
-      <div class="form-group">
-        <label for="phone">Mobile Number *</label>
-        <input
-          id="phone"
-          type="tel"
-          required
-          maxlength="10"
-          inputmode="numeric"
-          placeholder="10 digit mobile number"
-        >
-      </div>
+    <div class="modal-box">
 
-      <div class="form-group">
-        <label for="address">Full Address *</label>
-        <textarea
-          id="address"
-          required
-          maxlength="500"
-          placeholder="House no., street, area..."
-        ></textarea>
-      </div>
+      <h2 class="modal-title">📦 Checkout</h2>
 
-      <div class="two">
+      <p class="modal-subtitle">
+        Enter your details and place your order.
+      </p>
 
-        <div class="form-group">
-          <label for="city">City *</label>
+      <form id="checkoutForm">
+
+        <div class="field">
+          <label>Full Name *</label>
+
           <input
-            id="city"
             type="text"
+            id="customerName"
             required
-            maxlength="80"
+            placeholder="Enter your name"
+          >
+        </div>
+
+        <div class="field">
+          <label>Mobile Number *</label>
+
+          <input
+            type="tel"
+            id="customerPhone"
+            required
+            maxlength="10"
+            inputmode="numeric"
+            placeholder="10 digit mobile number"
+          >
+        </div>
+
+        <div class="field">
+          <label>Full Address *</label>
+
+          <textarea
+            id="customerAddress"
+            required
+            placeholder="House no., colony, street..."
+          ></textarea>
+        </div>
+
+        <div class="field">
+          <label>City *</label>
+
+          <input
+            type="text"
+            id="customerCity"
+            required
             placeholder="City"
           >
         </div>
 
-        <div class="form-group">
-          <label for="state">State *</label>
+        <div class="field">
+          <label>State *</label>
+
           <input
-            id="state"
             type="text"
+            id="customerState"
             required
-            maxlength="80"
             placeholder="State"
           >
         </div>
 
-      </div>
+        <div class="field">
+          <label>Pincode *</label>
 
-      <div class="form-group">
-        <label for="pincode">Pincode *</label>
-        <input
-          id="pincode"
-          type="text"
-          required
-          maxlength="6"
-          inputmode="numeric"
-          placeholder="6 digit pincode"
-        >
-      </div>
+          <input
+            type="text"
+            id="customerPincode"
+            required
+            maxlength="6"
+            inputmode="numeric"
+            placeholder="6 digit pincode"
+          >
+        </div>
 
-      <div class="upi-box">
+        <div class="order-summary">
+          <strong>Order Total:</strong>
 
-        <h3 style="color:#4b1020;">💳 Pay via UPI</h3>
+          <span id="checkoutTotal">
+            ₹0
+          </span>
+        </div>
 
-        <p style="font-size:13px;margin-top:5px;">
-          UPI ID
-        </p>
+        <!-- UPI PAYMENT -->
+        <div class="payment-box">
 
-        <div class="upi-id" id="upiDisplay">
-          8962200566-2@ibl
+          <h3 style="color:#4b1020;margin-bottom:6px;">
+            💳 Pay via UPI
+          </h3>
+
+          <p style="font-size:13px;color:#654;">
+            UPI ID:
+          </p>
+
+          <div class="upi-id">
+            8962200566-2@ibl
+          </div>
+
+          <p style="font-size:12px;color:#765861;margin:4px 0 10px;">
+            Pay the exact order amount using your UPI app.
+          </p>
+
+          <button
+            type="button"
+            class="pay-btn"
+            onclick="payViaUPI()"
+          >
+            💰 Pay Now via UPI
+          </button>
+
         </div>
 
         <button
-          type="button"
-          class="secondary-btn"
-          onclick="copyUPI()"
+          type="submit"
+          class="submit-order"
+          id="submitOrderBtn"
         >
-          📋 Copy UPI ID
+          ✅ Place Order
         </button>
 
         <button
           type="button"
-          class="primary-btn"
-          onclick="payNow()"
+          class="cancel-btn"
+          onclick="closeCheckout()"
         >
-          💳 Pay Now
+          Cancel
         </button>
 
-      </div>
+      </form>
 
-      <button
-        type="submit"
-        class="primary-btn"
-        id="placeOrderBtn"
-      >
-        📱 Place Order on WhatsApp
-      </button>
-
-    </form>
-
+    </div>
   </div>
-</div>
 
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
 
-<div class="toast" id="toast"></div>
+  <!-- FOOTER -->
+  <footer>
+
+    <h3>Mayuri General Store</h3>
+
+    <p>Thank you for shopping with us ❤️</p>
+
+    <p>For help or order support, contact us on WhatsApp.</p>
+
+    <a
+      class="whatsapp-footer"
+      href="https://wa.me/918223837338"
+      target="_blank"
+      rel="noopener"
+    >
+      💬 WhatsApp Us
+    </a>
+
+  </footer>
 
 
 <script>
-/* =========================================================
-   MAYURI GENERAL STORE
-   SUPABASE CONFIGURATION
-   ========================================================= */
+  /* =====================================================
+     SUPABASE CONFIG
+     ===================================================== */
 
-const SUPABASE_URL =
-  "https://inbhwgksryupmbujzciw.supabase.co";
+  const SUPABASE_URL =
+    "https://inbhwgksryupmbujzciw.supabase.co";
 
-/*
-  IMPORTANT:
-  Apni Supabase PUBLISHABLE KEY yahan paste karo.
+  /*
+    IMPORTANT:
+    Yaha apna SUPABASE PUBLISHABLE KEY paste karna hai.
+    Secret/service-role key mat lagana.
+  */
 
-  Example:
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_....";
-*/
-const SUPABASE_PUBLISHABLE_KEY =
-  "sb_publishable_obSRAPVUsZZeInZ-RhMq3A_43nx9IPw";
+  const SUPABASE_PUBLISHABLE_KEY =
+    "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE";
 
+  let supabaseClient = null;
 
-const WHATSAPP =
-  "918223837338";
-
-const UPI =
-  "8962200566-2@ibl";
-
-const STORE_NAME =
-  "Mayuri General Store";
-
-
-/* =========================================================
-   SUPABASE CLIENT
-   ========================================================= */
-
-let supabaseClient = null;
-
-if(
-  window.supabase &&
-  SUPABASE_PUBLISHABLE_KEY !== "PASTE_YOUR_PUBLISHABLE_KEY_HERE"
-){
-  supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
-}
-
-
-/* =========================================================
-   CART
-   ========================================================= */
-
-let cart = [];
-
-try{
-  const savedCart = localStorage.getItem("mayuri_cart");
-
-  if(savedCart){
-    const parsed = JSON.parse(savedCart);
-
-    if(Array.isArray(parsed)){
-      cart = parsed;
-    }
+  if (
+    SUPABASE_PUBLISHABLE_KEY &&
+    !SUPABASE_PUBLISHABLE_KEY.includes("PASTE_YOUR")
+  ) {
+    supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
   }
-}catch(error){
-  cart = [];
-}
 
 
-function saveCart(){
-  try{
+  /* =====================================================
+     STORE SETTINGS
+     ===================================================== */
+
+  const STORE_NAME = "Mayuri General Store";
+
+  const WHATSAPP_NUMBER = "918223837338";
+
+  const UPI_ID = "8962200566-2@ibl";
+
+
+  /* =====================================================
+     FALLBACK PRODUCT
+     
+     Agar products table abhi empty hai,
+     website phir bhi Blue Haven Eyeliner dikhayegi.
+     ===================================================== */
+
+  const fallbackProducts = [
+    {
+      id: "blue-haven-eyeliner",
+      name: "Blue Haven Eyeliner",
+      category: "Cosmetics",
+      description: "Black eyeliner",
+      price: 199,
+      old_price: 249,
+      stock: 999,
+      image_url: ""
+    }
+  ];
+
+
+  /* =====================================================
+     APP STATE
+     ===================================================== */
+
+  let products = [];
+
+  let cart = JSON.parse(
+    localStorage.getItem("mayuri_cart") || "[]"
+  );
+
+  let selectedCategory = "All";
+
+
+  /* =====================================================
+     START
+     ===================================================== */
+
+  document.addEventListener("DOMContentLoaded", async function() {
+
+    updateCartUI();
+
+    await loadProducts();
+
+  });
+
+
+  /* =====================================================
+     LOAD PRODUCTS FROM SUPABASE
+     ===================================================== */
+
+  async function loadProducts() {
+
+    try {
+
+      if (!supabaseClient) {
+        products = fallbackProducts;
+        renderProducts();
+        return;
+      }
+
+      const { data, error } = await supabaseClient
+        .from("products")
+        .select("*")
+        .order("created_at", {
+          ascending: false
+        });
+
+      if (error) {
+        console.error("Products error:", error);
+
+        products = fallbackProducts;
+
+        showToast(
+          "Products database se load nahi hua. Demo product dikha rahe hain."
+        );
+
+        renderProducts();
+
+        return;
+      }
+
+      if (!data || data.length === 0) {
+
+        products = fallbackProducts;
+
+        showToast(
+          "Supabase me abhi product nahi hai. Blue Haven Eyeliner demo ke roop me dikh raha hai."
+        );
+
+      } else {
+
+        products = data;
+
+      }
+
+      renderProducts();
+
+    } catch (error) {
+
+      console.error(error);
+
+      products = fallbackProducts;
+
+      renderProducts();
+
+    }
+
+  }
+
+
+  /* =====================================================
+     CATEGORY
+     ===================================================== */
+
+  function setCategory(category, button) {
+
+    selectedCategory = category;
+
+    document
+      .querySelectorAll(".category")
+      .forEach(function(btn) {
+        btn.classList.remove("active");
+      });
+
+    button.classList.add("active");
+
+    renderProducts();
+
+  }
+
+
+  /* =====================================================
+     RENDER PRODUCTS
+     ===================================================== */
+
+  function renderProducts() {
+
+    const grid =
+      document.getElementById("productsGrid");
+
+    const empty =
+      document.getElementById("emptyProducts");
+
+    const search =
+      document.getElementById("searchInput")
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const filtered = products.filter(function(product) {
+
+      const matchesCategory =
+        selectedCategory === "All" ||
+        String(product.category || "")
+          .toLowerCase() ===
+        selectedCategory.toLowerCase();
+
+      const matchesSearch =
+        !search ||
+        String(product.name || "")
+          .toLowerCase()
+          .includes(search) ||
+        String(product.category || "")
+          .toLowerCase()
+          .includes(search);
+
+      return matchesCategory && matchesSearch;
+
+    });
+
+
+    grid.innerHTML = "";
+
+    if (filtered.length === 0) {
+
+      empty.style.display = "block";
+
+      return;
+
+    }
+
+    empty.style.display = "none";
+
+
+    filtered.forEach(function(product) {
+
+      const price =
+        Number(product.price || 0);
+
+      const oldPrice =
+        Number(product.old_price || 0);
+
+      const stock =
+        product.stock == null
+          ? 999
+          : Number(product.stock);
+
+
+      let discount = "";
+
+      if (oldPrice > price && oldPrice > 0) {
+
+        const percentage =
+          Math.round(
+            ((oldPrice - price) / oldPrice) * 100
+          );
+
+        discount =
+          '<div class="discount">' +
+          percentage +
+          '% OFF</div>';
+
+      }
+
+
+      let imageArea = "";
+
+      if (product.image_url) {
+
+        imageArea =
+          '<img src="' +
+          escapeHTML(product.image_url) +
+          '" alt="' +
+          escapeHTML(product.name) +
+          '" style="width:100%;height:100%;object-fit:cover;" loading="lazy">';
+
+      } else {
+
+        imageArea =
+          '<div class="product-placeholder">💄</div>';
+
+      }
+
+
+      const outOfStock =
+        stock <= 0;
+
+
+      const card =
+        '<div class="product-card">' +
+
+          '<div class="product-image">' +
+
+            imageArea +
+
+            discount +
+
+          '</div>' +
+
+          '<div class="product-info">' +
+
+            '<div class="product-category">' +
+              escapeHTML(product.category || "General") +
+            '</div>' +
+
+            '<div class="product-name">' +
+              escapeHTML(product.name) +
+            '</div>' +
+
+            '<div class="product-description">' +
+              escapeHTML(
+                product.description ||
+                "Quality product from Mayuri General Store."
+              ) +
+            '</div>' +
+
+            '<div class="price-row">' +
+
+              '<span class="price">₹' +
+                price.toFixed(0) +
+              '</span>' +
+
+              (
+                oldPrice > price
+                ? '<span class="old-price">₹' +
+                    oldPrice.toFixed(0) +
+                  '</span>'
+                : ''
+              ) +
+
+            '</div>' +
+
+            '<button ' +
+
+              'class="add-btn ' +
+              (outOfStock ? "out-stock" : "") +
+              '" ' +
+
+              (
+                outOfStock
+                ? 'disabled'
+                : 'onclick="addToCart(\'' +
+                    escapeJS(String(product.id)) +
+                  '\')"'
+              ) +
+
+            '>' +
+
+              (
+                outOfStock
+                ? "Out of Stock"
+                : "🛒 Add to Cart"
+              ) +
+
+            '</button>' +
+
+          '</div>' +
+
+        '</div>';
+
+
+      grid.insertAdjacentHTML(
+        "beforeend",
+        card
+      );
+
+    });
+
+  }
+
+
+  /* =====================================================
+     ADD TO CART
+     ===================================================== */
+
+  function addToCart(productId) {
+
+    const product =
+      products.find(function(item) {
+        return String(item.id) === String(productId);
+      });
+
+
+    if (!product) {
+
+      showToast("Product nahi mila.");
+
+      return;
+
+    }
+
+
+    const stock =
+      product.stock == null
+        ? 999
+        : Number(product.stock);
+
+
+    const existing =
+      cart.find(function(item) {
+        return String(item.id) === String(productId);
+      });
+
+
+    if (existing) {
+
+      if (existing.quantity >= stock) {
+
+        showToast("Itna stock available nahi hai.");
+
+        return;
+
+      }
+
+      existing.quantity += 1;
+
+    } else {
+
+      cart.push({
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        price: Number(product.price || 0),
+        quantity: 1
+      });
+
+    }
+
+
+    saveCart();
+
+    updateCartUI();
+
+    showToast(
+      product.name + " cart me add ho gaya 🛒"
+    );
+
+  }
+
+
+  /* =====================================================
+     CART STORAGE
+     ===================================================== */
+
+  function saveCart() {
+
     localStorage.setItem(
       "mayuri_cart",
       JSON.stringify(cart)
     );
-  }catch(error){
-    console.warn("Could not save cart.", error);
-  }
-}
 
-
-function getCartCount(){
-  return cart.reduce(
-    function(total,item){
-      return total + Number(item.quantity || 0);
-    },
-    0
-  );
-}
-
-
-function getCartTotal(){
-  return cart.reduce(
-    function(total,item){
-      return total +
-        Number(item.price || 0) *
-        Number(item.quantity || 0);
-    },
-    0
-  );
-}
-
-
-function updateCartCount(){
-  document.getElementById("cartCount").textContent =
-    getCartCount();
-}
-
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-
-let toastTimer = null;
-
-function showToast(message){
-
-  const toast =
-    document.getElementById("toast");
-
-  toast.textContent = message;
-
-  toast.classList.add("show");
-
-  clearTimeout(toastTimer);
-
-  toastTimer = setTimeout(
-    function(){
-      toast.classList.remove("show");
-    },
-    2500
-  );
-}
-
-
-/* =========================================================
-   PRODUCTS
-   ========================================================= */
-
-let allProducts = [];
-let selectedCategory = "All";
-
-
-async function loadProducts(){
-
-  const grid =
-    document.getElementById("productsGrid");
-
-  if(!supabaseClient){
-
-    /*
-      Fallback product.
-      Isse Supabase key galat/blank hone par bhi
-      website completely blank nahi hogi.
-    */
-
-    allProducts = [
-      {
-        id:1,
-        name:"Blue Haven Eyeliner",
-        category:"Cosmetics",
-        description:"Smooth and easy-to-use eyeliner.",
-        price:199,
-        old_price:249,
-        stock:100,
-        image_url:""
-      }
-    ];
-
-    renderProducts();
-
-    showToast(
-      "⚠️ Supabase key add karna baki hai."
-    );
-
-    return;
   }
 
 
-  try{
+  /* =====================================================
+     UPDATE CART
+     ===================================================== */
 
-    const result =
-      await supabaseClient
-        .from("products")
-        .select("*")
-        .order("created_at",{ascending:false});
+  function updateCartUI() {
+
+    const count =
+      cart.reduce(function(total, item) {
+        return total + item.quantity;
+      }, 0);
 
 
-    if(result.error){
-      throw result.error;
+    document.getElementById("cartCount")
+      .textContent = count;
+
+
+    const cartItems =
+      document.getElementById("cartItems");
+
+
+    if (cart.length === 0) {
+
+      cartItems.innerHTML =
+        '<div style="text-align:center;padding:45px 10px;color:#765861;">' +
+          '<div style="font-size:50px;">🛒</div>' +
+          '<h3 style="margin:10px 0;color:#4b1020;">Your cart is empty</h3>' +
+          '<p>Add some products to continue.</p>' +
+        '</div>';
+
+      document.getElementById("cartTotal")
+        .textContent = "₹0";
+
+      return;
+
     }
 
 
-    allProducts =
-      Array.isArray(result.data)
-        ? result.data
-        : [];
+    let html = "";
+
+    let total = 0;
 
 
-    /*
-      Agar products table empty hai,
-      demo product show hoga.
-    */
+    cart.forEach(function(item, index) {
 
-    if(allProducts.length === 0){
+      const subtotal =
+        Number(item.price) * Number(item.quantity);
 
-      allProducts = [
-        {
-          id:1,
-          name:"Blue Haven Eyeliner",
-          category:"Cosmetics",
-          description:"Smooth and easy-to-use eyeliner.",
-          price:199,
-          old_price:249,
-          stock:100,
-          image_url:""
-        }
-      ];
+      total += subtotal;
 
-      showToast(
-        "ℹ️ Products table empty hai. Demo product shown."
-      );
+
+      html +=
+        '<div class="cart-item">' +
+
+          '<div class="cart-item-top">' +
+
+            '<div>' +
+
+              '<div class="cart-item-name">' +
+                escapeHTML(item.name) +
+              '</div>' +
+
+              '<div style="font-size:12px;color:#765861;">' +
+                escapeHTML(item.category || "") +
+              '</div>' +
+
+            '</div>' +
+
+            '<div class="cart-item-price">' +
+              "₹" +
+              subtotal.toFixed(0) +
+            '</div>' +
+
+          '</div>' +
+
+          '<div class="qty-box">' +
+
+            '<button class="qty-btn" onclick="changeQuantity(' +
+              index +
+              ',-1)">−</button>' +
+
+            '<strong>' +
+              item.quantity +
+            '</strong>' +
+
+            '<button class="qty-btn" onclick="changeQuantity(' +
+              index +
+              ',1)">+</button>' +
+
+            '<button class="remove-btn" onclick="removeFromCart(' +
+              index +
+            ')">' +
+              'REMOVE' +
+            '</button>' +
+
+          '</div>' +
+
+        '</div>';
+
+    });
+
+
+    cartItems.innerHTML = html;
+
+    document.getElementById("cartTotal")
+      .textContent = "₹" + total.toFixed(0);
+
+  }
+
+
+  /* =====================================================
+     CHANGE QUANTITY
+     ===================================================== */
+
+  function changeQuantity(index, change) {
+
+    if (!cart[index]) return;
+
+
+    const newQuantity =
+      cart[index].quantity + change;
+
+
+    if (newQuantity <= 0) {
+
+      cart.splice(index, 1);
+
+    } else {
+
+      const product =
+        products.find(function(item) {
+          return String(item.id) ===
+            String(cart[index].id);
+        });
+
+
+      const stock =
+        product && product.stock != null
+          ? Number(product.stock)
+          : 999;
+
+
+      if (newQuantity > stock) {
+
+        showToast("Available stock limit reached.");
+
+        return;
+
+      }
+
+
+      cart[index].quantity =
+        newQuantity;
+
     }
 
 
-    renderProducts();
+    saveCart();
 
-  }catch(error){
+    updateCartUI();
 
-    console.error(
-      "Supabase products error:",
-      error
-    );
-
-    /*
-      Supabase error hone par demo product.
-    */
-
-    allProducts = [
-      {
-        id:1,
-        name:"Blue Haven Eyeliner",
-        category:"Cosmetics",
-        description:"Smooth and easy-to-use eyeliner.",
-        price:199,
-        old_price:249,
-        stock:100,
-        image_url:""
-      }
-    ];
-
-    renderProducts();
-
-    showToast(
-      "⚠️ Products load nahi hue. Demo product shown."
-    );
   }
-}
 
 
-function renderProducts(){
+  /* =====================================================
+     REMOVE
+     ===================================================== */
 
-  const grid =
-    document.getElementById("productsGrid");
+  function removeFromCart(index) {
 
-  const search =
+    if (!cart[index]) return;
+
+    cart.splice(index, 1);
+
+    saveCart();
+
+    updateCartUI();
+
+    showToast("Product cart se remove ho gaya.");
+
+  }
+
+
+  /* =====================================================
+     OPEN / CLOSE CART
+     ===================================================== */
+
+  function openCart() {
+
     document
-      .getElementById("searchInput")
-      .value
-      .toLowerCase()
-      .trim();
+      .getElementById("cartDrawer")
+      .classList.add("open");
 
+    document
+      .getElementById("cartOverlay")
+      .classList.add("show");
 
-  const filtered =
-    allProducts.filter(
-      function(product){
-
-        const name =
-          String(product.name || "")
-            .toLowerCase();
-
-        const category =
-          String(product.category || "");
-
-        const categoryMatch =
-          selectedCategory === "All" ||
-          category === selectedCategory;
-
-        const searchMatch =
-          name.includes(search);
-
-        return categoryMatch && searchMatch;
-      }
-    );
-
-
-  if(filtered.length === 0){
-
-    grid.innerHTML =
-      '<div class="empty" style="grid-column:1/-1;">' +
-      '😔 No products found.' +
-      '</div>';
-
-    return;
   }
 
 
-  grid.innerHTML =
-    filtered
-      .map(
-        function(product){
-          return createProductCard(product);
+  function closeCart() {
+
+    document
+      .getElementById("cartDrawer")
+      .classList.remove("open");
+
+    document
+      .getElementById("cartOverlay")
+      .classList.remove("show");
+
+  }
+
+
+  /* =====================================================
+     CHECKOUT
+     ===================================================== */
+
+  function openCheckout() {
+
+    if (cart.length === 0) {
+
+      showToast("Pehle cart me product add karo.");
+
+      return;
+
+    }
+
+
+    closeCart();
+
+    updateCheckoutTotal();
+
+    document
+      .getElementById("checkoutModal")
+      .classList.add("show");
+
+  }
+
+
+  function closeCheckout() {
+
+    document
+      .getElementById("checkoutModal")
+      .classList.remove("show");
+
+  }
+
+
+  function updateCheckoutTotal() {
+
+    const total =
+      getCartTotal();
+
+    document.getElementById("checkoutTotal")
+      .textContent =
+      "₹" + total.toFixed(0);
+
+  }
+
+
+  function getCartTotal() {
+
+    return cart.reduce(function(total, item) {
+
+      return total +
+        Number(item.price) *
+        Number(item.quantity);
+
+    }, 0);
+
+  }
+
+
+  /* =====================================================
+     UPI PAYMENT
+     ===================================================== */
+
+  function payViaUPI() {
+
+    if (cart.length === 0) {
+
+      showToast("Cart empty hai.");
+
+      return;
+
+    }
+
+
+    const amount =
+      getCartTotal();
+
+
+    const upiUrl =
+      "upi://pay?" +
+      "pa=" +
+      encodeURIComponent(UPI_ID) +
+      "&pn=" +
+      encodeURIComponent(STORE_NAME) +
+      "&am=" +
+      encodeURIComponent(amount.toFixed(2)) +
+      "&cu=INR";
+
+
+    /*
+      Mobile par UPI app open karne ki koshish karega.
+      Har browser/device par UPI deep-link support same nahi hota.
+    */
+
+    window.location.href = upiUrl;
+
+  }
+
+
+  /* =====================================================
+     PLACE ORDER
+     ===================================================== */
+
+  document
+    .getElementById("checkoutForm")
+    .addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+
+      if (cart.length === 0) {
+
+        showToast("Cart empty hai.");
+
+        return;
+
+      }
+
+
+      const name =
+        document.getElementById("customerName")
+          .value
+          .trim();
+
+
+      const phone =
+        document.getElementById("customerPhone")
+          .value
+          .trim();
+
+
+      const address =
+        document.getElementById("customerAddress")
+          .value
+          .trim();
+
+
+      const city =
+        document.getElementById("customerCity")
+          .value
+          .trim();
+
+
+      const state =
+        document.getElementById("customerState")
+          .value
+          .trim();
+
+
+      const pincode =
+        document.getElementById("customerPincode")
+          .value
+          .trim();
+
+
+      if (!/^[0-9]{10}$/.test(phone)) {
+
+        showToast(
+          "Please valid 10 digit mobile number enter karo."
+        );
+
+        return;
+
+      }
+
+
+      if (!/^[0-9]{6}$/.test(pincode)) {
+
+        showToast(
+          "Please valid 6 digit pincode enter karo."
+        );
+
+        return;
+
+      }
+
+
+      const fullAddress =
+        address +
+        ", " +
+        city +
+        ", " +
+        state +
+        " - " +
+        pincode;
+
+
+      const total =
+        getCartTotal();
+
+
+      /*
+        JSONB field ke liye clean order items.
+      */
+
+      const orderItems =
+        cart.map(function(item) {
+
+          return {
+            id: item.id,
+            name: item.name,
+            category: item.category,
+            price: Number(item.price),
+            quantity: Number(item.quantity)
+          };
+
+        });
+
+
+      const submitButton =
+        document.getElementById("submitOrderBtn");
+
+
+      submitButton.disabled = true;
+
+      submitButton.textContent =
+        "⏳ Placing Order...";
+
+
+      try {
+
+        if (!supabaseClient) {
+
+          throw new Error(
+            "Supabase publishable key missing hai."
+          );
+
         }
-      )
-      .join("");
-}
 
 
-function escapeHTML(value){
+        /*
+          IMPORTANT:
+          Yaha SELECT nahi lagaya gaya.
+          Isliye orders table par public SELECT policy ki zarurat nahi.
+        */
 
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-
-function createProductCard(product){
-
-  const id =
-    String(product.id);
-
-  const name =
-    escapeHTML(product.name || "Product");
-
-  const category =
-    escapeHTML(product.category || "General");
-
-  const description =
-    escapeHTML(
-      product.description ||
-      "Quality product from Mayuri General Store."
-    );
-
-  const price =
-    Number(product.price || 0);
-
-  const oldPrice =
-    Number(product.old_price || 0);
-
-  const stock =
-    product.stock === null ||
-    product.stock === undefined
-      ? 999999
-      : Number(product.stock);
+        const { error } =
+          await supabaseClient
+            .from("orders")
+            .insert([
+              {
+                customer_name: name,
+                phone: phone,
+                address: fullAddress,
+                total: total,
+                items: orderItems,
+                status: "pending"
+              }
+            ]);
 
 
-  const image =
-    String(product.image_url || "").trim();
+        if (error) {
+
+          console.error(
+            "Order insert error:",
+            error
+          );
+
+          throw error;
+
+        }
 
 
-  let imageHTML = "";
+        /*
+          Database me order save hone ke baad
+          WhatsApp message prepare hoga.
+        */
+
+        let message =
+          "🛍️ *New Order - " +
+          STORE_NAME +
+          "*\n\n";
 
 
-  if(image){
+        message +=
+          "👤 Name: " +
+          name +
+          "\n";
 
-    imageHTML =
-      '<img src="' +
-      escapeHTML(image) +
-      '" alt="' +
-      name +
-      '" loading="lazy"
+
+        message +=
+          "📱 Phone: " +
+          phone +
+          "\n";
+
+
+        message +=
+          "📍 Address: " +
+          fullAddress +
+          "\n\n";
+
+
+        message +=
+          "🛒 *Items:*\n";
+
+
+        orderItems.forEach(function(item) {
+
+          message +=
+            "• " +
+            item.name +
+            " × " +
+            item.quantity +
+            " = ₹" +
+            (
+              item.price *
+              item.quantity
+            ).toFixed(0) +
+            "\n";
+
+        });
+
+
+        message +=
+          "\n💰 *Total: ₹" +
+          total.toFixed(0) +
+          "*\n";
+
+
+        message +=
+          "\n💳 Payment: UPI / Pay on confirmation";
+
+
+        /*
+          Clear cart only after successful DB insert.
+        */
+
+        cart = [];
+
+        saveCart();
+
+        updateCartUI();
+
+
+        document
+          .getElementById("checkoutForm")
+          .reset();
+
+
+        closeCheckout();
+
+
+        showToast(
+          "✅ Order successfully place ho gaya!"
+        );
+
+
+        /*
+          WhatsApp open after successful order.
+        */
+
+        setTimeout(function() {
+
+          const whatsappUrl =
+            "https://wa.me/" +
+            WHATSAPP_NUMBER +
+            "?text=" +
+            encodeURIComponent(message);
+
+
+          window.open(
+            whatsappUrl,
+            "_blank"
+          );
+
+        }, 700);
+
+
+      } catch (error) {
+
+        console.error(error);
+
+
+        let errorMessage =
+          "Order save nahi hua.";
+
+
+        if (
+          error &&
+          error.message
+        ) {
+
+          errorMessage =
+            "Order save nahi hua: " +
+            error.message;
+
+        }
+
+
+        showToast(errorMessage);
+
+      } finally {
+
+        submitButton.disabled = false;
+
+        submitButton.textContent =
+          "✅ Place Order";
+
+      }
+
+    });
+
+
+  /* =====================================================
+     TOAST
+     ===================================================== */
+
+  let toastTimer;
+
+
+  function showToast(message) {
+
+    const toast =
+      document.getElementById("toast");
+
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+
+    clearTimeout(toastTimer);
+
+
+    toastTimer =
+      setTimeout(function() {
+
+        toast.classList.remove("show");
+
+      }, 3000);
+
+  }
+
+
+  /* =====================================================
+     SECURITY / HTML ESCAPE
+     ===================================================== */
+
+  function escapeHTML(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+
+  function escapeJS(value) {
+
+    return String(value)
+      .replace(/\\/g, "\\\\")
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, "\\n")
+      .replace(/\r/g, "\\r");
+
+  }
+
+</script>
+
+</body>
+</html>
