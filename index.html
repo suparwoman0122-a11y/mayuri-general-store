@@ -6,411 +6,372 @@
 
   <title>Mayuri General Store</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta name="description"
+        content="Mayuri General Store - Cosmetics, Artificial Jewellery and more.">
 
   <style>
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-      font-family:Arial,sans-serif;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
     }
 
-    body{
-      background:#fff9f7;
-      color:#35131e;
+    body {
+      background: #fffaf5;
+      color: #333;
     }
 
-    header{
-      position:sticky;
-      top:0;
-      z-index:1000;
-      background:#4b1020;
-      padding:13px 16px;
-      box-shadow:0 3px 15px rgba(0,0,0,.25);
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #4b1020, #751b36);
+      color: white;
+      padding: 25px 15px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
     }
 
-    .nav{
-      max-width:1100px;
-      margin:auto;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
+    .logo {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      background: #d4af37;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: auto;
+      font-size: 35px;
+      border: 4px solid white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
-    .logo{
-      color:#fff;
-      font-size:20px;
-      font-weight:800;
+    header h1 {
+      margin-top: 12px;
+      font-size: 28px;
     }
 
-    .cart-button{
-      border:0;
-      background:#d4af37;
-      color:#35131e;
-      padding:10px 15px;
-      border-radius:25px;
-      font-weight:bold;
-      cursor:pointer;
+    header p {
+      margin-top: 6px;
+      opacity: 0.9;
+      font-size: 14px;
     }
 
-    .hero{
-      background:linear-gradient(135deg,#3b0b18,#781d38);
-      color:white;
-      text-align:center;
-      padding:60px 18px;
+    /* SEARCH */
+    .search-box {
+      padding: 18px 15px 5px;
+      max-width: 700px;
+      margin: auto;
     }
 
-    .hero h1{
-      font-size:clamp(32px,8vw,58px);
-      margin-bottom:12px;
+    .search-box input {
+      width: 100%;
+      padding: 15px 18px;
+      border: 1px solid #ddd;
+      border-radius: 30px;
+      outline: none;
+      font-size: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.06);
     }
 
-    .hero p{
-      color:#f5d98b;
-      font-size:16px;
+    .search-box input:focus {
+      border-color: #d4af37;
     }
 
-    .section{
-      max-width:1100px;
-      margin:auto;
-      padding:35px 15px;
+    /* CATEGORIES */
+    .categories {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 18px 15px;
+      max-width: 900px;
+      margin: auto;
     }
 
-    .title{
-      text-align:center;
-      color:#4b1020;
-      margin-bottom:22px;
+    .categories::-webkit-scrollbar {
+      display: none;
     }
 
-    .categories{
-      display:flex;
-      gap:9px;
-      overflow-x:auto;
-      padding:5px 0 15px;
-      scrollbar-width:none;
+    .category {
+      border: none;
+      background: white;
+      color: #4b1020;
+      padding: 12px 19px;
+      border-radius: 30px;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid #eadede;
+      transition: 0.25s;
     }
 
-    .categories::-webkit-scrollbar{
-      display:none;
+    .category:hover,
+    .category.active {
+      background: #4b1020;
+      color: white;
+      transform: translateY(-2px);
     }
 
-    .category{
-      flex:0 0 auto;
-      border:1px solid #d4af37;
-      background:#fff;
-      color:#4b1020;
-      padding:9px 14px;
-      border-radius:25px;
-      cursor:pointer;
-      font-weight:600;
+    /* PRODUCTS */
+    .products {
+      max-width: 1100px;
+      margin: auto;
+      padding: 10px 15px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 22px;
     }
 
-    .category.active{
-      background:#4b1020;
-      color:#fff;
+    .product-card {
+      background: white;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(75,16,32,0.10);
+      border: 1px solid #f0e5e5;
+      transition: 0.25s;
     }
 
-    .products{
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:18px;
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(75,16,32,0.16);
     }
 
-    .card{
-      background:#fff;
-      border:1px solid #ead49a;
-      border-radius:18px;
-      padding:14px;
-      box-shadow:0 5px 20px rgba(75,16,32,.09);
-      overflow:hidden;
+    .product-image {
+      position: relative;
+      width: 100%;
+      height: 270px;
+      overflow: hidden;
+      background: #f8f2f2;
     }
 
-    .product-image{
-      height:170px;
-      border-radius:14px;
-      background:linear-gradient(135deg,#fff0f3,#f8e0a8);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:65px;
-      margin-bottom:13px;
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
-    .card h3{
-      color:#4b1020;
-      font-size:17px;
-      margin-bottom:7px;
+    .offer-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #d4af37;
+      color: white;
+      padding: 7px 11px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
     }
 
-    .desc{
-      color:#777;
-      font-size:13px;
-      min-height:34px;
+    .product-info {
+      padding: 18px;
     }
 
-    .price{
-      margin-top:10px;
+    .product-category {
+      color: #a17a12;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
     }
 
-    .old{
-      color:#888;
-      text-decoration:line-through;
-      margin-right:5px;
+    .product-info h2 {
+      color: #4b1020;
+      font-size: 21px;
+      margin: 7px 0;
     }
 
-    .new{
-      color:#4b1020;
-      font-size:21px;
-      font-weight:bold;
+    .description {
+      color: #777;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 12px;
     }
 
-    .off{
-      display:inline-block;
-      background:#d4af37;
-      color:#35131e;
-      padding:4px 7px;
-      border-radius:7px;
-      font-size:11px;
-      font-weight:bold;
-      margin-top:5px;
+    .price-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin: 10px 0 15px;
     }
 
-    .add{
-      width:100%;
-      border:0;
-      background:#4b1020;
-      color:#fff;
-      padding:11px;
-      border-radius:10px;
-      margin-top:11px;
-      font-weight:bold;
-      cursor:pointer;
+    .old-price {
+      color: #999;
+      text-decoration: line-through;
+      font-size: 14px;
     }
 
-    footer{
-      background:#35131e;
-      color:white;
-      text-align:center;
-      padding:30px 15px;
-      margin-top:20px;
+    .price {
+      color: #4b1020;
+      font-size: 23px;
+      font-weight: 800;
     }
 
-    .overlay{
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,.65);
-      z-index:2000;
-      display:none;
-      align-items:flex-end;
-      justify-content:center;
+    .discount {
+      background: #e8d48b;
+      color: #4b1020;
+      padding: 5px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: bold;
     }
 
-    .overlay.show{
-      display:flex;
+    .order-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #4b1020;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
-    .modal{
-      width:100%;
-      max-width:560px;
-      max-height:92vh;
-      overflow-y:auto;
-      background:#fff;
-      border-radius:22px 22px 0 0;
-      padding:20px;
+    .order-btn:hover {
+      background: #68172e;
+      transform: translateY(-2px);
     }
 
-    .modal-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:15px;
+    /* UPI SECTION */
+    .upi-section {
+      max-width: 700px;
+      margin: 15px auto 35px;
+      padding: 22px 18px;
+      background: #fff8e1;
+      border: 1px solid #d4af37;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(212,175,55,0.12);
     }
 
-    .close{
-      border:0;
-      background:#eee;
-      width:35px;
-      height:35px;
-      border-radius:50%;
-      font-size:20px;
-      cursor:pointer;
+    .upi-section h2 {
+      color: #4b1020;
+      margin-bottom: 8px;
+      font-size: 23px;
     }
 
-    .cart-item{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      padding:13px 0;
-      border-bottom:1px solid #eee;
+    .upi-section p {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 13px;
     }
 
-    .quantity{
-      display:flex;
-      align-items:center;
-      gap:7px;
-      margin-top:8px;
+    .upi-id-box {
+      background: white;
+      border: 1px dashed #d4af37;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 13px;
+      color: #4b1020;
+      font-weight: bold;
+      word-break: break-all;
     }
 
-    .quantity button{
-      border:0;
-      background:#4b1020;
-      color:#fff;
-      width:29px;
-      height:29px;
-      border-radius:7px;
-      cursor:pointer;
+    .upi-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
-    .remove{
-      width:auto!important;
-      background:none!important;
-      color:#c00!important;
+    .pay-btn,
+    .copy-btn {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 20px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
     }
 
-    .total{
-      display:flex;
-      justify-content:space-between;
-      font-size:21px;
-      font-weight:bold;
-      color:#4b1020;
-      margin:20px 0;
+    .pay-btn {
+      background: #4b1020;
+      color: white;
     }
 
-    input,textarea{
-      width:100%;
-      border:1px solid #ddd;
-      border-radius:10px;
-      padding:13px;
-      margin-bottom:12px;
-      font-size:15px;
-      outline:none;
+    .copy-btn {
+      background: #d4af37;
+      color: white;
     }
 
-    textarea{
-      min-height:90px;
-      resize:vertical;
+    .pay-btn:hover,
+    .copy-btn:hover {
+      transform: translateY(-2px);
     }
 
-    .checkout{
-      width:100%;
-      border:0;
-      background:#128c7e;
-      color:#fff;
-      padding:14px;
-      border-radius:12px;
-      font-size:16px;
-      font-weight:bold;
-      cursor:pointer;
+    /* WHATSAPP */
+    .whatsapp-section {
+      text-align: center;
+      padding: 10px 15px 35px;
     }
 
-    .checkout:disabled{
-      opacity:.6;
+    .whatsapp-section h2 {
+      color: #4b1020;
+      margin-bottom: 8px;
     }
 
-    .message{
-      padding:11px;
-      border-radius:9px;
-      margin-bottom:12px;
-      text-align:center;
-      display:none;
+    .whatsapp-section p {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 15px;
     }
 
-    .success{
-      display:block;
-      background:#e5f8ed;
-      color:#146c43;
+    .whatsapp-btn {
+      display: inline-block;
+      background: #25D366;
+      color: white;
+      text-decoration: none;
+      padding: 14px 24px;
+      border-radius: 30px;
+      font-weight: bold;
+      box-shadow: 0 5px 15px rgba(37,211,102,0.25);
     }
 
-    .error{
-      display:block;
-      background:#ffe6e6;
-      color:#a00000;
+    /* FOOTER */
+    footer {
+      background: #4b1020;
+      color: white;
+      text-align: center;
+      padding: 22px 15px;
+      font-size: 13px;
     }
 
-    /* UPI BOX */
-
-    .upi-box{
-      margin:15px 0;
-      padding:16px;
-      background:#fff8e1;
-      border:1px solid #d4af37;
-      border-radius:14px;
-      text-align:center;
+    footer strong {
+      color: #d4af37;
     }
 
-    .upi-title{
-      color:#4b1020;
-      font-size:18px;
-      font-weight:bold;
-      margin-bottom:8px;
+    /* NO PRODUCTS */
+    .no-products {
+      display: none;
+      text-align: center;
+      padding: 40px 15px;
+      color: #777;
     }
 
-    .upi-id{
-      display:block;
-      color:#4b1020;
-      font-size:16px;
-      font-weight:bold;
-      margin:8px 0 12px;
-      word-break:break-all;
-    }
+    /* MOBILE */
+    @media (max-width: 600px) {
 
-    .upi-button{
-      width:100%;
-      border:0;
-      background:#4b1020;
-      color:white;
-      padding:13px;
-      border-radius:10px;
-      font-weight:bold;
-      font-size:15px;
-      cursor:pointer;
-    }
-
-    .upi-note{
-      font-size:12px;
-      color:#777;
-      margin-top:9px;
-      line-height:1.4;
-    }
-
-    @media(max-width:800px){
-      .products{
-        grid-template-columns:repeat(2,1fr);
-        gap:12px;
+      header h1 {
+        font-size: 24px;
       }
 
-      .product-image{
-        height:135px;
-        font-size:50px;
-      }
-    }
-
-    @media(max-width:430px){
-      .logo{
-        font-size:16px;
+      .products {
+        grid-template-columns: 1fr;
       }
 
-      .cart-button{
-        padding:9px 12px;
-        font-size:12px;
+      .product-image {
+        height: 290px;
       }
 
-      .card{
-        padding:10px;
+      .upi-buttons {
+        flex-direction: column;
       }
 
-      .card h3{
-        font-size:15px;
-      }
-
-      .new{
-        font-size:18px;
-      }
-
-      .product-image{
-        height:120px;
+      .pay-btn,
+      .copy-btn {
+        width: 100%;
       }
     }
   </style>
@@ -418,782 +379,381 @@
 
 <body>
 
-<header>
-  <div class="nav">
-    <div class="logo">✨ Mayuri General Store</div>
+  <!-- HEADER -->
+  <header>
 
-    <button class="cart-button" onclick="openCart()">
-      🛒 Cart (<span id="cartCount">0</span>)
-    </button>
+    <div class="logo">
+      🛍️
+    </div>
+
+    <h1>Mayuri General Store</h1>
+
+    <p>Your trusted store for everyday shopping ✨</p>
+
+  </header>
+
+
+  <!-- SEARCH -->
+  <div class="search-box">
+
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="🔍 Search products..."
+      onkeyup="searchProducts()"
+    >
+
   </div>
-</header>
 
-<section class="hero">
-  <h1>Mayuri General Store</h1>
-  <p>Quality Products • Best Prices • Easy Ordering</p>
-</section>
 
-<section class="section">
-
-  <h2 class="title">🛍️ Shop Our Products</h2>
-
+  <!-- CATEGORIES -->
   <div class="categories">
 
-    <button class="category active"
-      onclick="setCategory('All',this)">
-      All
+    <button
+      class="category active"
+      onclick="setCategory('All', this)">
+      🛍️ All
     </button>
 
-    <button class="category"
-      onclick="setCategory('Stationery',this)">
-      📚 Stationery
-    </button>
-
-    <button class="category"
-      onclick="setCategory('Cosmetics',this)">
+    <button
+      class="category"
+      onclick="setCategory('Cosmetics', this)">
       💄 Cosmetics
     </button>
 
-    <button class="category"
-      onclick="setCategory('Artificial Jewellery',this)">
+    <button
+      class="category"
+      onclick="setCategory('Artificial Jewellery', this)">
       💎 Jewellery
     </button>
 
-    <button class="category"
-      onclick="setCategory('Toys',this)">
-      🧸 Toys
-    </button>
-
-    <button class="category"
-      onclick="setCategory('General Items',this)">
-      🛍️ General
-    </button>
-
   </div>
 
-  <div id="products" class="products">
-    <div style="text-align:center;grid-column:1/-1;">
-      Loading products...
-    </div>
-  </div>
 
-</section>
-
-<footer>
-  <h3>Mayuri General Store</h3>
-  <p style="margin-top:8px;">
-    Thank you for shopping with us ❤️
-  </p>
-</footer>
+  <!-- PRODUCTS -->
+  <div class="products" id="products">
 
 
-<!-- CART -->
+    <!-- BLUE HAVEN EYELINER -->
+    <div
+      class="product-card"
+      data-category="Cosmetics"
+      data-name="Blue Haven Eyeliner"
+    >
 
-<div id="cartOverlay" class="overlay">
+      <div class="product-image">
 
-  <div class="modal">
+        <span class="offer-badge">
+          20% OFF
+        </span>
 
-    <div class="modal-head">
-      <h2>🛒 Your Cart</h2>
+        <img
+          src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=800&q=80"
+          alt="Blue Haven Eyeliner"
+        >
 
-      <button class="close" onclick="closeCart()">
-        ×
-      </button>
-    </div>
+      </div>
 
-    <div id="cartItems"></div>
+      <div class="product-info">
 
-    <div class="total">
-      <span>Total</span>
-      <span>₹<span id="cartTotal">0</span></span>
-    </div>
+        <span class="product-category">
+          💄 Cosmetics
+        </span>
 
-    <button class="checkout" onclick="openCheckout()">
-      Proceed to Checkout →
-    </button>
+        <h2>
+          Blue Haven Eyeliner
+        </h2>
 
-  </div>
-
-</div>
-
-
-<!-- CHECKOUT -->
-
-<div id="checkoutOverlay" class="overlay">
-
-  <div class="modal">
-
-    <div class="modal-head">
-      <h2>📦 Checkout</h2>
-
-      <button class="close" onclick="closeCheckout()">
-        ×
-      </button>
-    </div>
-
-    <div id="message" class="message"></div>
-
-    <form id="checkoutForm">
-
-      <input
-        id="name"
-        type="text"
-        placeholder="Your Name"
-        required
-      >
-
-      <input
-        id="phone"
-        type="tel"
-        placeholder="10-digit Mobile Number"
-        maxlength="10"
-        pattern="[0-9]{10}"
-        required
-      >
-
-      <textarea
-        id="address"
-        placeholder="Complete Delivery Address"
-        required
-      ></textarea>
-
-
-      <!-- UPI PAYMENT -->
-
-      <div class="upi-box">
-
-        <div class="upi-title">
-          💳 Pay via UPI
-        </div>
-
-        <p style="font-size:13px;color:#555;">
-          UPI ID
+        <p class="description">
+          Smooth and stylish eyeliner for creating
+          a beautiful eye look.
         </p>
 
-        <span class="upi-id">
-          8962200566-2@ibl
-        </span>
+        <div class="price-row">
+
+          <span class="old-price">
+            ₹249
+          </span>
+
+          <span class="price">
+            ₹199
+          </span>
+
+          <span class="discount">
+            20% OFF
+          </span>
+
+        </div>
 
         <button
-          type="button"
-          class="upi-button"
-          onclick="payViaUPI()">
-
-          💰 Pay ₹<span id="upiAmount">0</span> via UPI
-
+          class="order-btn"
+          onclick="orderProduct('Blue Haven Eyeliner', 199)"
+        >
+          🛒 Order on WhatsApp
         </button>
 
-        <p class="upi-note">
-          UPI payment karne ke baad neeche
-          <b>Place Order & WhatsApp</b> button dabayein.
-          Payment ko store owner manually verify karega.
-        </p>
-
       </div>
 
+    </div>
 
-      <div class="total">
-
-        <span>Order Total</span>
-
-        <span>
-          ₹<span id="checkoutTotal">0</span>
-        </span>
-
-      </div>
-
-
-      <button
-        id="placeOrder"
-        class="checkout"
-        type="submit">
-
-        🟢 Place Order & WhatsApp
-
-      </button>
-
-    </form>
 
   </div>
 
-</div>
+
+  <!-- NO PRODUCTS MESSAGE -->
+  <div
+    class="no-products"
+    id="noProducts"
+  >
+    😔 No product found.
+  </div>
 
 
-<script>
+  <!-- UPI PAYMENT -->
+  <section class="upi-section">
 
-/* =========================================
-   SUPABASE CONNECTION
-========================================= */
+    <h2>
+      💳 Pay via UPI
+    </h2>
 
-const SUPABASE_URL =
-  "https://inbhwgksryupmbujzciw.supabase.co";
+    <p>
+      Fast & easy payment using any UPI app.
+    </p>
 
-/*
-  IMPORTANT:
-  Apni existing Supabase Publishable key
-  yahan khud paste karo.
-*/
+    <div class="upi-id-box">
+      UPI ID:
+      <span id="upiId">
+        8962200566-2@ibl
+      </span>
+    </div>
 
-const SUPABASE_ANON_KEY =
-  "sb_publishable_obSRAPVUsZZeInZ-RhMq3A_43nx9IPw";
+    <div class="upi-buttons">
 
+      <button
+        class="pay-btn"
+        onclick="payNow()"
+      >
+        💳 Pay Now ₹199
+      </button>
 
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+      <button
+        class="copy-btn"
+        onclick="copyUPI()"
+      >
+        📋 Copy UPI ID
+      </button>
 
+    </div>
 
-/* =========================================
-   STORE SETTINGS
-========================================= */
-
-const WHATSAPP_NUMBER =
-  "918223837338";
-
-const UPI_ID =
-  "8962200566-2@ibl";
-
-const UPI_NAME =
-  "Mayuri General Store";
-
-
-let products = [];
-
-let cart = [];
-
-let currentCategory = "All";
+  </section>
 
 
-/* =========================================
-   LOAD PRODUCTS
-========================================= */
+  <!-- WHATSAPP -->
+  <section class="whatsapp-section">
 
-async function loadProducts(){
+    <h2>
+      📱 Need Help?
+    </h2>
 
-  const box =
-    document.getElementById("products");
+    <p>
+      Contact Mayuri General Store on WhatsApp.
+    </p>
 
-  try{
+    <a
+      class="whatsapp-btn"
+      href="https://wa.me/918223837338"
+      target="_blank"
+    >
+      💬 Chat on WhatsApp
+    </a>
 
-    const {data,error} =
-      await supabaseClient
-        .from("products")
-        .select("*")
-        .order("created_at",{ascending:false});
-
-    if(error) throw error;
-
-    products = data || [];
-
-    renderProducts();
-
-  }catch(error){
-
-    console.error(error);
-
-    box.innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;">
-        ❌ Products load nahi ho rahe.<br>
-        Supabase connection check karo.
-      </div>
-    `;
-  }
-}
+  </section>
 
 
-/* =========================================
-   SHOW PRODUCTS
-========================================= */
+  <!-- FOOTER -->
+  <footer>
 
-function renderProducts(){
+    <p>
+      © 2026 <strong>Mayuri General Store</strong>
+    </p>
 
-  const box =
-    document.getElementById("products");
+    <p style="margin-top:6px;">
+      Made with ❤️ for our customers
+    </p>
 
-  let list = products;
+  </footer>
 
-  if(currentCategory !== "All"){
 
-    list =
-      products.filter(
-        p => p.category === currentCategory
+  <script>
+
+    /* CATEGORY FILTER */
+    function setCategory(category, button) {
+
+      document
+        .querySelectorAll(".category")
+        .forEach(function(btn) {
+          btn.classList.remove("active");
+        });
+
+      button.classList.add("active");
+
+      const products =
+        document.querySelectorAll(".product-card");
+
+      let visible = 0;
+
+      products.forEach(function(product) {
+
+        const productCategory =
+          product.getAttribute("data-category");
+
+        if (
+          category === "All" ||
+          productCategory === category
+        ) {
+
+          product.style.display = "block";
+          visible++;
+
+        } else {
+
+          product.style.display = "none";
+
+        }
+
+      });
+
+      document.getElementById("noProducts").style.display =
+        visible === 0 ? "block" : "none";
+
+      document.getElementById("searchInput").value = "";
+
+    }
+
+
+    /* SEARCH */
+    function searchProducts() {
+
+      const search =
+        document
+          .getElementById("searchInput")
+          .value
+          .toLowerCase()
+          .trim();
+
+      const products =
+        document.querySelectorAll(".product-card");
+
+      let visible = 0;
+
+      products.forEach(function(product) {
+
+        const name =
+          product
+            .getAttribute("data-name")
+            .toLowerCase();
+
+        if (name.includes(search)) {
+
+          product.style.display = "block";
+          visible++;
+
+        } else {
+
+          product.style.display = "none";
+
+        }
+
+      });
+
+      document.getElementById("noProducts").style.display =
+        visible === 0 ? "block" : "none";
+
+    }
+
+
+    /* WHATSAPP ORDER */
+    function orderProduct(productName, price) {
+
+      const phone = "918223837338";
+
+      const message =
+        "Hello Mayuri General Store 👋%0A%0A" +
+        "I want to order:%0A" +
+        "🛍️ Product: " + productName + "%0A" +
+        "💰 Price: ₹" + price + "%0A%0A" +
+        "Please confirm my order.";
+
+      const whatsappURL =
+        "https://wa.me/" +
+        phone +
+        "?text=" +
+        message;
+
+      window.open(
+        whatsappURL,
+        "_blank"
       );
-  }
 
-  if(!list.length){
+    }
 
-    box.innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;">
-        Is category me abhi product available nahi hai.
-      </div>
-    `;
 
-    return;
-  }
+    /* UPI PAYMENT */
+    function payNow() {
 
+      const upiId =
+        "8962200566-2@ibl";
 
-  box.innerHTML =
-    list.map(product => {
-
-      let discount = 0;
-
-      if(
-        product.old_price &&
-        product.old_price > product.price
-      ){
-
-        discount =
-          Math.round(
-            ((product.old_price-product.price) /
-            product.old_price)*100
-          );
-      }
-
-
-      return `
-
-        <div class="card">
-
-          <div class="product-image">
-            💄
-          </div>
-
-          <h3>
-            ${safe(product.name)}
-          </h3>
-
-          <div class="desc">
-            ${safe(product.description || "")}
-          </div>
-
-          <div class="price">
-
-            ${
-              product.old_price
-              ? `<span class="old">
-                   ₹${product.old_price}
-                 </span>`
-              : ""
-            }
-
-            <span class="new">
-              ₹${product.price}
-            </span>
-
-            ${
-              discount
-              ? `<div class="off">
-                   ${discount}% OFF
-                 </div>`
-              : ""
-            }
-
-          </div>
-
-          <button
-            class="add"
-            onclick="addToCart('${product.id}')">
-
-            🛒 Add to Cart
-
-          </button>
-
-        </div>
-
-      `;
-
-    }).join("");
-}
-
-
-/* =========================================
-   CATEGORY
-========================================= */
-
-function setCategory(category,button){
-
-  currentCategory = category;
-
-  document
-    .querySelectorAll(".category")
-    .forEach(
-      b => b.classList.remove("active")
-    );
-
-  button.classList.add("active");
-
-  renderProducts();
-}
-
-
-/* =========================================
-   ADD TO CART
-========================================= */
-
-function addToCart(id){
-
-  const product =
-    products.find(
-      p => String(p.id) === String(id)
-    );
-
-  if(!product) return;
-
-
-  const existing =
-    cart.find(
-      item =>
-        String(item.id) === String(product.id)
-    );
-
-
-  if(existing){
-
-    existing.quantity++;
-
-  }else{
-
-    cart.push({
-
-      id:product.id,
-
-      name:product.name,
-
-      price:Number(product.price),
-
-      quantity:1
-
-    });
-
-  }
-
-  updateCart();
-}
-
-
-/* =========================================
-   CART QUANTITY
-========================================= */
-
-function changeQuantity(id,value){
-
-  const item =
-    cart.find(
-      x => String(x.id) === String(id)
-    );
-
-  if(!item) return;
-
-  item.quantity += value;
-
-  if(item.quantity <= 0){
-
-    cart =
-      cart.filter(
-        x => String(x.id) !== String(id)
-      );
-  }
-
-  updateCart();
-}
-
-
-function removeItem(id){
-
-  cart =
-    cart.filter(
-      x => String(x.id) !== String(id)
-    );
-
-  updateCart();
-}
-
-
-/* =========================================
-   TOTAL
-========================================= */
-
-function getTotal(){
-
-  return cart.reduce(
-    (sum,item) =>
-      sum + item.price * item.quantity,
-    0
-  );
-}
-
-
-/* =========================================
-   UPDATE CART
-========================================= */
-
-function updateCart(){
-
-  const count =
-    cart.reduce(
-      (sum,item) =>
-        sum + item.quantity,
-      0
-    );
-
-  document.getElementById("cartCount")
-    .textContent = count;
-
-  renderCart();
-
-}
-
-
-/* =========================================
-   RENDER CART
-========================================= */
-
-function renderCart(){
-
-  const box =
-    document.getElementById("cartItems");
-
-
-  if(!cart.length){
-
-    box.innerHTML = `
-      <div style="text-align:center;padding:30px;color:#777;">
-        🛒 Your cart is empty.
-      </div>
-    `;
-
-  }else{
-
-    box.innerHTML =
-      cart.map(item => `
-
-        <div class="cart-item">
-
-          <div>
-
-            <strong>
-              ${safe(item.name)}
-            </strong>
-
-            <div>
-              ₹${item.price}
-            </div>
-
-            <div class="quantity">
-
-              <button
-                onclick="changeQuantity('${item.id}',-1)">
-                −
-              </button>
-
-              <span>
-                ${item.quantity}
-              </span>
-
-              <button
-                onclick="changeQuantity('${item.id}',1)">
-                +
-              </button>
-
-              <button
-                class="remove"
-                onclick="removeItem('${item.id}')">
-
-                Remove
-
-              </button>
-
-            </div>
-
-          </div>
-
-          <strong>
-            ₹${item.price * item.quantity}
-          </strong>
-
-        </div>
-
-      `).join("");
-  }
-
-
-  document.getElementById("cartTotal")
-    .textContent = getTotal();
-
-  document.getElementById("checkoutTotal")
-    .textContent = getTotal();
-
-  document.getElementById("upiAmount")
-    .textContent = getTotal();
-
-}
-
-
-/* =========================================
-   CART MODAL
-========================================= */
-
-function openCart(){
-
-  renderCart();
-
-  document
-    .getElementById("cartOverlay")
-    .classList.add("show");
-}
-
-
-function closeCart(){
-
-  document
-    .getElementById("cartOverlay")
-    .classList.remove("show");
-}
-
-
-/* =========================================
-   CHECKOUT
-========================================= */
-
-function openCheckout(){
-
-  if(!cart.length){
-
-    alert("🛒 Pehle product cart me add karo.");
-
-    return;
-  }
-
-  closeCart();
-
-  document
-    .getElementById("checkoutOverlay")
-    .classList.add("show");
-
-  document.getElementById("checkoutTotal")
-    .textContent = getTotal();
-
-  document.getElementById("upiAmount")
-    .textContent = getTotal();
-
-}
-
-
-function closeCheckout(){
-
-  document
-    .getElementById("checkoutOverlay")
-    .classList.remove("show");
-}
-
-
-/* =========================================
-   UPI PAYMENT
-========================================= */
-
-function payViaUPI(){
-
-  const amount = getTotal();
-
-  if(!amount || amount <= 0){
-
-    alert("🛒 Pehle product cart me add karo.");
-
-    return;
-  }
-
-
-  const upiUrl =
-    "upi://pay" +
-    "?pa=" + encodeURIComponent(UPI_ID) +
-    "&pn=" + encodeURIComponent(UPI_NAME) +
-    "&am=" + encodeURIComponent(amount.toFixed(2)) +
-    "&cu=INR";
-
-
-  window.location.href = upiUrl;
-
-}
-
-
-/* =========================================
-   PLACE ORDER
-========================================= */
-
-document
-  .getElementById("checkoutForm")
-  .addEventListener(
-    "submit",
-    async function(e){
-
-      e.preventDefault();
-
-
-      if(!cart.length){
-
-        alert("Cart empty hai.");
-
-        return;
-      }
-
+      const amount =
+        "199";
 
       const name =
-        document.getElementById("name")
-          .value.trim();
+        "Mayuri General Store";
+
+      const note =
+        "Payment for Blue Haven Eyeliner";
+
+      const upiURL =
+        "upi://pay" +
+        "?pa=" + encodeURIComponent(upiId) +
+        "&pn=" + encodeURIComponent(name) +
+        "&am=" + amount +
+        "&cu=INR" +
+        "&tn=" + encodeURIComponent(note);
+
+      window.location.href = upiURL;
+
+    }
 
 
-      const phone =
-        document.getElementById("phone")
-          .value.trim();
+    /* COPY UPI */
+    function copyUPI() {
 
+      const upiId =
+        "8962200566-2@ibl";
 
-      const address =
-        document.getElementById("address")
-          .value.trim();
+      navigator.clipboard
+        .writeText(upiId)
+        .then(function() {
 
+          alert(
+            "✅ UPI ID copied!\n\n" +
+            upiId
+          );
 
-      const button =
-        document.getElementById("placeOrder");
+        })
+        .catch(function() {
 
+          alert(
+            "UPI ID: " +
+            upiId
+          );
 
-      const messageBox =
-        document.getElementById("message");
+        });
 
+    }
 
-      if(!/^[0-9]{10}$/.test(phone)){
+  </script>
 
-        messageBox.className =
-          "message error";
-
-        messageBox.textContent =
-          "❌ Valid 10-digit mobile number enter karo.";
-
-        return;
-      }
-
-
-      button.disabled = true;
-
-      button.textContent =
-        "⏳ Saving Order...";
-
-
-      const total =
-        getTotal();
-
-
-      const items =
-        cart.map(item => ({
-
-          product_id:item.id,
-
-          name:item.name,
-
-          price:item.price,
-
-          quantity:item.quantity,
-
-          subtotal:
-  
+</body>
+</html>
