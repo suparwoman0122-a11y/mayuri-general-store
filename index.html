@@ -1,1108 +1,1392 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Mayuri General Store</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #fffaf7;
-      color: #35151f;
-    }
-
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    /* HEADER */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: linear-gradient(135deg, #4b1020, #721c32);
-      color: white;
-      padding: 14px 5%;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.15);
-    }
-
-    .header-inner {
-      max-width: 1200px;
-      margin: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-icon {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      background: #d4af37;
-      color: #4b1020;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 23px;
-      font-weight: bold;
-    }
-
-    .logo-text h1 {
-      font-size: 20px;
-    }
-
-    .logo-text p {
-      font-size: 11px;
-      opacity: 0.85;
-    }
-
-    .cart-btn {
-      border: none;
-      background: #d4af37;
-      color: #4b1020;
-      padding: 11px 16px;
-      border-radius: 25px;
-      font-weight: bold;
-    }
-
-    .cart-btn:hover {
-      transform: scale(1.04);
-    }
-
-    /* HERO */
-    .hero {
-      max-width: 1200px;
-      margin: 25px auto;
-      padding: 45px 25px;
-      border-radius: 25px;
-      background:
-        radial-gradient(circle at top right, rgba(212,175,55,.25), transparent 35%),
-        linear-gradient(135deg, #4b1020, #8b2945);
-      color: white;
-      text-align: center;
-      box-shadow: 0 10px 30px rgba(75,16,32,.18);
-    }
-
-    .hero h2 {
-      font-size: clamp(30px, 6vw, 52px);
-      margin-bottom: 12px;
-    }
-
-    .hero p {
-      font-size: 16px;
-      opacity: .9;
-      margin-bottom: 22px;
-    }
-
-    .shop-btn {
-      border: none;
-      background: #d4af37;
-      color: #4b1020;
-      padding: 13px 25px;
-      border-radius: 30px;
-      font-weight: bold;
-    }
-
-    /* SEARCH */
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      padding: 0 18px 40px;
-    }
-
-    .search-box {
-      margin: 25px 0 18px;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 15px 18px;
-      border: 1px solid #ead5da;
-      border-radius: 15px;
-      outline: none;
-      background: white;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
-    }
-
-    .search-box input:focus {
-      border-color: #8b2945;
-    }
-
-    /* CATEGORIES */
-    .categories {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding: 5px 0 18px;
-      scrollbar-width: none;
-    }
-
-    .categories::-webkit-scrollbar {
-      display: none;
-    }
-
-    .category {
-      flex: 0 0 auto;
-      border: 1px solid #e6cfd5;
-      background: white;
-      color: #4b1020;
-      padding: 10px 16px;
-      border-radius: 25px;
-      font-weight: bold;
-    }
-
-    .category.active,
-    .category:hover {
-      background: #4b1020;
-      color: white;
-    }
-
-    /* SECTION TITLE */
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 15px 0;
-    }
-
-    .section-title h2 {
-      font-size: 25px;
-    }
-
-    /* PRODUCTS */
-    .products {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 18px;
-    }
-
-    .product-card {
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 1px solid #f0dfe3;
-      box-shadow: 0 7px 22px rgba(75,16,32,.08);
-      transition: .25s;
-    }
-
-    .product-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 30px rgba(75,16,32,.14);
-    }
-
-    .product-image {
-      height: 220px;
-      background: linear-gradient(145deg, #fff5f7, #f9e8ec);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .discount {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: #4b1020;
-      color: white;
-      padding: 7px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: bold;
-      z-index: 3;
-    }
-
-    /*
-      EYELINER VISUAL
-    */
-    .eyeliner-visual {
-      width: 175px;
-      height: 55px;
-      position: relative;
-      transform: rotate(-12deg);
-    }
-
-    .eyeliner-body {
-      position: absolute;
-      left: 30px;
-      top: 14px;
-      width: 105px;
-      height: 27px;
-      border-radius: 5px 14px 14px 5px;
-      background: linear-gradient(
-        to bottom,
-        #333,
-        #080808 45%,
-        #222
-      );
-      box-shadow: 0 8px 12px rgba(0,0,0,.2);
-    }
-
-    .eyeliner-body::after {
-      content: "";
-      position: absolute;
-      right: 12px;
-      top: 5px;
-      width: 55px;
-      height: 3px;
-      background: rgba(255,255,255,.16);
-      border-radius: 5px;
-    }
-
-    .eyeliner-cap {
-      position: absolute;
-      left: 0;
-      top: 9px;
-      width: 42px;
-      height: 37px;
-      border-radius: 6px 2px 2px 6px;
-      background: linear-gradient(
-        90deg,
-        #111,
-        #444,
-        #111
-      );
-    }
-
-    .eyeliner-tip {
-      position: absolute;
-      right: 4px;
-      top: 20px;
-      width: 42px;
-      height: 14px;
-      background: #050505;
-      clip-path: polygon(0 0, 100% 50%, 0 100%);
-    }
-
-    .eyeliner-label {
-      position: absolute;
-      left: 58px;
-      top: 20px;
-      color: #d4af37;
-      font-size: 8px;
-      font-weight: bold;
-      z-index: 2;
-      letter-spacing: .4px;
-    }
-
-    .product-info {
-      padding: 15px;
-    }
-
-    .product-category {
-      color: #9a6875;
-      font-size: 12px;
-      margin-bottom: 6px;
-    }
-
-    .product-name {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    .product-description {
-      color: #765c64;
-      font-size: 13px;
-      line-height: 1.5;
-      min-height: 40px;
-    }
-
-    .price-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin: 12px 0;
-    }
-
-    .old-price {
-      color: #999;
-      text-decoration: line-through;
-      font-size: 13px;
-    }
-
-    .new-price {
-      font-size: 22px;
-      color: #4b1020;
-      font-weight: bold;
-    }
-
-    .add-btn {
-      width: 100%;
-      border: none;
-      background: #4b1020;
-      color: white;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: bold;
-    }
-
-    .add-btn:hover {
-      background: #721c32;
-    }
-
-    /* EMPTY */
-    .empty {
-      text-align: center;
-      background: white;
-      padding: 40px 20px;
-      border-radius: 18px;
-      border: 1px solid #eee;
-      grid-column: 1 / -1;
-    }
-
-    /* TRUST */
-    .trust {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
-      margin-top: 35px;
-    }
-
-    .trust-card {
-      background: white;
-      padding: 20px;
-      text-align: center;
-      border-radius: 18px;
-      border: 1px solid #f0dfe3;
-    }
-
-    .trust-card .icon {
-      font-size: 30px;
-      margin-bottom: 8px;
-    }
-
-    .trust-card h3 {
-      margin-bottom: 5px;
-    }
-
-    .trust-card p {
-      color: #765c64;
-      font-size: 13px;
-    }
-
-    /* MODAL */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.55);
-      z-index: 2000;
-      padding: 15px;
-      overflow-y: auto;
-    }
-
-    .modal.show {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-box {
-      width: 100%;
-      max-width: 560px;
-      max-height: 92vh;
-      overflow-y: auto;
-      background: #fffaf7;
-      border-radius: 22px;
-      padding: 20px;
-      position: relative;
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 36px;
-      height: 36px;
-      border: none;
-      border-radius: 50%;
-      background: #f2e1e5;
-      color: #4b1020;
-      font-size: 20px;
-    }
-
-    .modal-title {
-      margin-bottom: 18px;
-      padding-right: 40px;
-    }
-
-    /* CART */
-    .cart-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: white;
-      padding: 12px;
-      border-radius: 15px;
-      margin-bottom: 10px;
-      border: 1px solid #eee;
-    }
-
-    .cart-item-info {
-      flex: 1;
-    }
-
-    .cart-item-name {
-      font-weight: bold;
-    }
-
-    .cart-item-price {
-      color: #4b1020;
-      font-size: 13px;
-      margin-top: 4px;
-    }
-
-    .qty {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .qty button {
-      width: 30px;
-      height: 30px;
-      border: none;
-      border-radius: 8px;
-      background: #f1e0e4;
-      color: #4b1020;
-      font-weight: bold;
-    }
-
-    .remove {
-      border: none;
-      background: transparent;
-      color: #c0392b;
-      font-size: 18px;
-    }
-
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-      padding: 17px 5px;
-      border-top: 1px solid #ddd;
-      margin-top: 12px;
-      font-size: 21px;
-      font-weight: bold;
-    }
-
-    .checkout-btn {
-      width: 100%;
-      border: none;
-      background: #4b1020;
-      color: white;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: bold;
-    }
-
-    /* FORM */
-    .form-group {
-      margin-bottom: 13px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #dfcbd0;
-      border-radius: 11px;
-      outline: none;
-      background: white;
-    }
-
-    .form-group textarea {
-      min-height: 85px;
-      resize: vertical;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: #8b2945;
-    }
-
-    /* UPI */
-    .upi-box {
-      margin: 16px 0;
-      padding: 16px;
-      background: #fff7df;
-      border: 1px solid #d4af37;
-      border-radius: 15px;
-      text-align: center;
-    }
-
-    .upi-id {
-      display: inline-block;
-      margin: 8px 0;
-      padding: 8px 12px;
-      background: white;
-      border-radius: 8px;
-      font-weight: bold;
-      word-break: break-all;
-    }
-
-    .upi-buttons {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .upi-buttons button {
-      flex: 1;
-      border: none;
-      padding: 11px;
-      border-radius: 10px;
-      font-weight: bold;
-    }
-
-    .pay-btn {
-      background: #198754;
-      color: white;
-    }
-
-    .copy-btn {
-      background: #4b1020;
-      color: white;
-    }
-
-    .place-order {
-      width: 100%;
-      border: none;
-      background: #25D366;
-      color: white;
-      padding: 14px;
-      border-radius: 12px;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-
-    /* FOOTER */
-    footer {
-      background: #4b1020;
-      color: white;
-      text-align: center;
-      padding: 30px 15px;
-      margin-top: 20px;
-    }
-
-    footer h2 {
-      margin-bottom: 8px;
-    }
-
-    footer p {
-      opacity: .85;
-      font-size: 13px;
-    }
-
-    /* TOAST */
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 25px;
-      transform: translate(-50%, 100px);
-      background: #4b1020;
-      color: white;
-      padding: 12px 18px;
-      border-radius: 25px;
-      z-index: 5000;
-      transition: .3s;
-      box-shadow: 0 8px 25px rgba(0,0,0,.2);
-    }
-
-    .toast.show {
-      transform: translate(-50%, 0);
-    }
-
-    /* MOBILE */
-    @media (max-width: 900px) {
-      .products {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 600px) {
-      .header-inner {
-        padding: 0;
-      }
-
-      .logo-text h1 {
-        font-size: 17px;
-      }
-
-      .logo-icon {
-        width: 39px;
-        height: 39px;
-      }
-
-      .cart-btn {
-        padding: 9px 12px;
-        font-size: 13px;
-      }
-
-      .hero {
-        margin: 15px 0 22px;
-        border-radius: 20px;
-        padding: 35px 18px;
-      }
-
-      .products {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-
-      .product-image {
-        height: 165px;
-      }
-
-      .product-info {
-        padding: 11px;
-      }
-
-      .product-name {
-        font-size: 15px;
-      }
-
-      .product-description {
-        font-size: 11px;
-        min-height: 35px;
-      }
-
-      .new-price {
-        font-size: 18px;
-      }
-
-      .old-price {
-        font-size: 11px;
-      }
-
-      .add-btn {
-        padding: 10px 5px;
-        font-size: 12px;
-      }
-
-      .trust {
-        grid-template-columns: 1fr;
-      }
-
-      .upi-buttons {
-        flex-direction: column;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mayuri General Store</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#fff8f6;
+  color:#35151f;
+}
+
+/* HEADER */
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:linear-gradient(135deg,#4b1020,#781f38);
+  color:white;
+  padding:14px 5%;
+  box-shadow:0 4px 18px rgba(0,0,0,.15);
+}
+
+.header{
+  max-width:1200px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo-circle{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:#d4af37;
+  color:#4b1020;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.logo h1{
+  font-size:20px;
+}
+
+.logo p{
+  font-size:11px;
+  opacity:.85;
+}
+
+.cart-button{
+  border:none;
+  background:#d4af37;
+  color:#4b1020;
+  padding:11px 17px;
+  border-radius:25px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* HERO */
+.hero{
+  max-width:1200px;
+  margin:25px auto;
+  padding:50px 20px;
+  border-radius:25px;
+  text-align:center;
+  color:white;
+  background:
+    radial-gradient(circle at 90% 10%,rgba(212,175,55,.35),transparent 35%),
+    linear-gradient(135deg,#4b1020,#8d2948);
+}
+
+.hero h2{
+  font-size:clamp(30px,6vw,50px);
+  margin-bottom:12px;
+}
+
+.hero p{
+  margin-bottom:22px;
+  opacity:.9;
+}
+
+.shop-now{
+  border:none;
+  background:#d4af37;
+  color:#4b1020;
+  padding:13px 25px;
+  border-radius:30px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* MAIN */
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:0 18px 50px;
+}
+
+/* SEARCH */
+.search{
+  margin:20px 0;
+}
+
+.search input{
+  width:100%;
+  padding:15px 18px;
+  border:1px solid #ead3d9;
+  border-radius:15px;
+  outline:none;
+  background:white;
+  font-size:15px;
+}
+
+/* CATEGORY */
+.categories{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding:5px 0 20px;
+  scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
+}
+
+.category{
+  flex:0 0 auto;
+  padding:10px 17px;
+  border:1px solid #e5ccd3;
+  background:white;
+  color:#4b1020;
+  border-radius:25px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.category.active,
+.category:hover{
+  background:#4b1020;
+  color:white;
+}
+
+/* TITLE */
+.title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:10px 0 18px;
+}
+
+.title h2{
+  font-size:26px;
+}
+
+/* PRODUCTS */
+.products{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+}
+
+/* PRODUCT CARD */
+.product-card{
+  background:white;
+  border-radius:20px;
+  overflow:hidden;
+  border:1px solid #f0dfe3;
+  box-shadow:0 7px 22px rgba(75,16,32,.09);
+  transition:.25s;
+}
+
+.product-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 12px 30px rgba(75,16,32,.15);
+}
+
+/* PRODUCT IMAGE */
+.product-image{
+  height:230px;
+  background:linear-gradient(145deg,#fff5f7,#f8e4e9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+/* DISCOUNT */
+.discount{
+  position:absolute;
+  top:12px;
+  left:12px;
+  background:#4b1020;
+  color:white;
+  padding:7px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+/* EYELINER */
+.eyeliner{
+  width:190px;
+  height:80px;
+  position:relative;
+  transform:rotate(-12deg);
+}
+
+.eyeliner-body{
+  position:absolute;
+  left:38px;
+  top:25px;
+  width:115px;
+  height:30px;
+  border-radius:5px 15px 15px 5px;
+  background:linear-gradient(
+    to bottom,
+    #444,
+    #050505 45%,
+    #292929
+  );
+  box-shadow:0 9px 15px rgba(0,0,0,.25);
+}
+
+.eyeliner-cap{
+  position:absolute;
+  left:5px;
+  top:18px;
+  width:43px;
+  height:44px;
+  border-radius:7px 2px 2px 7px;
+  background:linear-gradient(
+    90deg,
+    #111,
+    #555,
+    #111
+  );
+}
+
+.eyeliner-tip{
+  position:absolute;
+  right:2px;
+  top:31px;
+  width:48px;
+  height:17px;
+  background:#050505;
+  clip-path:polygon(0 0,100% 50%,0 100%);
+}
+
+.eyeliner-text{
+  position:absolute;
+  left:65px;
+  top:35px;
+  color:#d4af37;
+  font-size:8px;
+  font-weight:bold;
+  z-index:2;
+}
+
+/* PRODUCT INFO */
+.product-info{
+  padding:15px;
+}
+
+.category-name{
+  color:#9b6976;
+  font-size:12px;
+  margin-bottom:6px;
+}
+
+.product-name{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:7px;
+}
+
+.description{
+  color:#765d65;
+  font-size:13px;
+  line-height:1.5;
+  min-height:40px;
+}
+
+.price{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:13px 0;
+}
+
+.old-price{
+  color:#999;
+  text-decoration:line-through;
+  font-size:13px;
+}
+
+.new-price{
+  color:#4b1020;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.add-cart{
+  width:100%;
+  border:none;
+  background:#4b1020;
+  color:white;
+  padding:12px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.add-cart:hover{
+  background:#761f38;
+}
+
+/* TRUST */
+.trust{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-top:35px;
+}
+
+.trust-box{
+  background:white;
+  padding:20px;
+  text-align:center;
+  border-radius:18px;
+  border:1px solid #f0dfe3;
+}
+
+.trust-box .emoji{
+  font-size:30px;
+  margin-bottom:8px;
+}
+
+.trust-box p{
+  color:#765d65;
+  font-size:13px;
+  margin-top:6px;
+}
+
+/* MODAL */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.58);
+  z-index:3000;
+  padding:15px;
+  overflow:auto;
+}
+
+.modal.show{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-box{
+  width:100%;
+  max-width:560px;
+  max-height:92vh;
+  overflow:auto;
+  background:#fffaf8;
+  border-radius:22px;
+  padding:20px;
+  position:relative;
+}
+
+.close{
+  position:absolute;
+  right:12px;
+  top:12px;
+  width:36px;
+  height:36px;
+  border:none;
+  border-radius:50%;
+  background:#f2e0e5;
+  color:#4b1020;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.modal-title{
+  margin-bottom:18px;
+}
+
+/* CART */
+.cart-item{
+  background:white;
+  border:1px solid #eee;
+  padding:13px;
+  border-radius:15px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.cart-info{
+  flex:1;
+}
+
+.cart-name{
+  font-weight:bold;
+}
+
+.cart-price{
+  color:#4b1020;
+  font-size:13px;
+  margin-top:4px;
+}
+
+.quantity{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.quantity button{
+  width:30px;
+  height:30px;
+  border:none;
+  border-radius:8px;
+  background:#f0dfe3;
+  color:#4b1020;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.delete{
+  border:none;
+  background:none;
+  color:#d33;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.total{
+  display:flex;
+  justify-content:space-between;
+  border-top:1px solid #ddd;
+  margin-top:15px;
+  padding:17px 5px;
+  font-size:21px;
+  font-weight:bold;
+}
+
+.checkout{
+  width:100%;
+  border:none;
+  background:#4b1020;
+  color:white;
+  padding:14px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* FORM */
+.form-group{
+  margin-bottom:13px;
+}
+
+.form-group label{
+  display:block;
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.form-group input,
+.form-group textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #ddcbd0;
+  border-radius:11px;
+  outline:none;
+  background:white;
+}
+
+.form-group textarea{
+  min-height:85px;
+  resize:vertical;
+}
+
+/* ORDER SUMMARY */
+.summary{
+  background:white;
+  border:1px solid #eadde0;
+  padding:15px;
+  border-radius:15px;
+  margin:15px 0;
+}
+
+.summary-row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+  font-size:14px;
+}
+
+.summary-total{
+  border-top:1px solid #ddd;
+  padding-top:10px;
+  margin-top:10px;
+  display:flex;
+  justify-content:space-between;
+  font-size:20px;
+  font-weight:bold;
+}
+
+/* UPI */
+.upi{
+  background:#fff7dc;
+  border:1px solid #d4af37;
+  padding:16px;
+  border-radius:15px;
+  text-align:center;
+  margin:15px 0;
+}
+
+.upi-id{
+  display:inline-block;
+  background:white;
+  padding:9px 12px;
+  border-radius:8px;
+  margin:8px 0;
+  font-weight:bold;
+}
+
+.upi-buttons{
+  display:flex;
+  gap:8px;
+}
+
+.upi-buttons button{
+  flex:1;
+  border:none;
+  padding:11px;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.pay{
+  background:#198754;
+  color:white;
+}
+
+.copy{
+  background:#4b1020;
+  color:white;
+}
+
+.place-order{
+  width:100%;
+  border:none;
+  background:#25d366;
+  color:white;
+  padding:14px;
+  border-radius:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* FOOTER */
+footer{
+  background:#4b1020;
+  color:white;
+  text-align:center;
+  padding:30px 15px;
+}
+
+footer p{
+  margin-top:7px;
+  opacity:.8;
+  font-size:13px;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translate(-50%,100px);
+  background:#4b1020;
+  color:white;
+  padding:12px 20px;
+  border-radius:25px;
+  z-index:5000;
+  transition:.3s;
+}
+
+.toast.show{
+  transform:translate(-50%,0);
+}
+
+/* MOBILE */
+@media(max-width:900px){
+
+  .products{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+
+@media(max-width:600px){
+
+  header{
+    padding:12px 4%;
+  }
+
+  .logo h1{
+    font-size:16px;
+  }
+
+  .logo p{
+    font-size:9px;
+  }
+
+  .logo-circle{
+    width:40px;
+    height:40px;
+  }
+
+  .cart-button{
+    padding:9px 12px;
+    font-size:12px;
+  }
+
+  .hero{
+    margin:15px 0 20px;
+    border-radius:20px;
+    padding:38px 16px;
+  }
+
+  .products{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .product-image{
+    height:170px;
+  }
+
+  .product-info{
+    padding:10px;
+  }
+
+  .product-name{
+    font-size:15px;
+  }
+
+  .description{
+    font-size:11px;
+  }
+
+  .new-price{
+    font-size:18px;
+  }
+
+  .old-price{
+    font-size:11px;
+  }
+
+  .add-cart{
+    padding:10px 4px;
+    font-size:12px;
+  }
+
+  .trust{
+    grid-template-columns:1fr;
+  }
+
+  .upi-buttons{
+    flex-direction:column;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="header-inner">
+<!-- HEADER -->
+<header>
+  <div class="header">
 
-      <div class="logo">
-        <div class="logo-icon">M</div>
+    <div class="logo">
+      <div class="logo-circle">M</div>
 
-        <div class="logo-text">
-          <h1>Mayuri General Store</h1>
-          <p>Everything You Need ❤️</p>
-        </div>
+      <div>
+        <h1>Mayuri General Store</h1>
+        <p>Everything You Need ❤️</p>
       </div>
-
-      <button class="cart-btn" onclick="openCart()">
-        🛒 Cart <span id="cartCount">0</span>
-      </button>
-
     </div>
-  </header>
 
-
-  <!-- HERO -->
-  <section class="hero">
-    <h2>Welcome to Mayuri General Store</h2>
-
-    <p>
-      Cosmetics, Jewellery, Stationery, Toys & General Items
-    </p>
-
-    <button class="shop-btn" onclick="scrollToProducts()">
-      🛍️ Shop Now
+    <button class="cart-button" onclick="openCart()">
+      🛒 Cart <span id="cartCount">0</span>
     </button>
-  </section>
+
+  </div>
+</header>
 
 
-  <main class="container" id="productsSection">
+<!-- HERO -->
+<section class="hero">
 
-    <!-- SEARCH -->
-    <div class="search-box">
-      <input
-        type="search"
-        id="searchInput"
-        placeholder="🔍 Search products..."
-        oninput="renderProducts()"
-      >
-    </div>
+  <h2>Welcome to Mayuri General Store</h2>
 
+  <p>
+    Cosmetics, Jewellery, Stationery, Toys & General Items
+  </p>
 
-    <!-- CATEGORIES -->
-    <div class="categories">
-
-      <button
-        class="category active"
-        onclick="setCategory('All', this)"
-      >
-        🛍️ All
-      </button>
-
-      <button
-        class="category"
-        onclick="setCategory('Cosmetics', this)"
-      >
-        💄 Cosmetics
-      </button>
-
-      <button
-        class="category"
-        onclick="setCategory('Artificial Jewellery', this)"
-      >
-        💎 Jewellery
-      </button>
-
-      <button
-        class="category"
-        onclick="setCategory('Stationery', this)"
-      >
-        ✏️ Stationery
-      </button>
-
-      <button
-        class="category"
-        onclick="setCategory('Toys', this)"
-      >
-        🧸 Toys
-      </button>
-
-      <button
-        class="category"
-        onclick="setCategory('General Items', this)"
-      >
-        🛒 General Items
-      </button>
-
-    </div>
-
-
-    <!-- PRODUCT SECTION -->
-    <div class="section-title">
-      <h2>✨ Our Products</h2>
-    </div>
-
-    <div
-      class="products"
-      id="productsGrid"
-    ></div>
-
-
-    <!-- TRUST -->
-    <div class="trust">
-
-      <div class="trust-card">
-        <div class="icon">💰</div>
-        <h3>Best Prices</h3>
-        <p>Great products at affordable prices.</p>
-      </div>
-
-      <div class="trust-card">
-        <div class="icon">🛍️</div>
-        <h3>Easy Ordering</h3>
-        <p>Add products to cart and place your order easily.</p>
-      </div>
-
-      <div class="trust-card">
-        <div class="icon">📱</div>
-        <h3>WhatsApp Order</h3>
-        <p>Order details are sent directly to our WhatsApp.</p>
-      </div>
-
-    </div>
-
-  </main>
-
-
-  <!-- CART MODAL -->
-  <div
-    class="modal"
-    id="cartModal"
-    onclick="closeModalOutside(event, 'cartModal')"
+  <button
+    class="shop-now"
+    onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})"
   >
+    🛍️ Shop Now
+  </button>
 
-    <div class="modal-box">
+</section>
 
-      <button
-        class="close-btn"
-        onclick="closeCart()"
-      >
-        ×
-      </button>
 
-      <h2 class="modal-title">
-        🛒 Your Cart
-      </h2>
+<main class="container" id="products">
 
-      <div id="cartItems"></div>
-
-      <div class="cart-total">
-        <span>Total</span>
-        <span id="cartTotal">₹0</span>
-      </div>
-
-      <button
-        class="checkout-btn"
-        onclick="openCheckout()"
-      >
-        Continue to Checkout →
-      </button>
-
-    </div>
+  <!-- SEARCH -->
+  <div class="search">
+    <input
+      type="text"
+      id="search"
+      placeholder="🔍 Search products..."
+      oninput="filterProducts()"
+    >
   </div>
 
 
-  <!-- CHECKOUT MODAL -->
-  <div
-    class="modal"
-    id="checkoutModal"
-    onclick="closeModalOutside(event, 'checkoutModal')"
-  >
+  <!-- CATEGORIES -->
+  <div class="categories">
 
-    <div class="modal-box">
+    <button
+      class="category active"
+      onclick="filterCategory('All',this)"
+    >
+      🛍️ All
+    </button>
 
-      <button
-        class="close-btn"
-        onclick="closeCheckout()"
-      >
-        ×
-      </button>
+    <button
+      class="category"
+      onclick="filterCategory('Cosmetics',this)"
+    >
+      💄 Cosmetics
+    </button>
 
-      <h2 class="modal-title">
-        📝 Customer Details
-      </h2>
+    <button
+      class="category"
+      onclick="filterCategory('Artificial Jewellery',this)"
+    >
+      💎 Jewellery
+    </button>
 
+    <button
+      class="category"
+      onclick="filterCategory('Stationery',this)"
+    >
+      ✏️ Stationery
+    </button>
 
-      <form id="checkoutForm">
+    <button
+      class="category"
+      onclick="filterCategory('Toys',this)"
+    >
+      🧸 Toys
+    </button>
 
-        <div class="form-group">
-          <label>Full Name *</label>
+    <button
+      class="category"
+      onclick="filterCategory('General Items',this)"
+    >
+      🛒 General Items
+    </button>
 
-          <input
-            type="text"
-            id="customerName"
-            placeholder="Enter your name"
-            required
-          >
-        </div>
-
-
-        <div class="form-group">
-          <label>Mobile Number *</label>
-
-          <input
-            type="tel"
-            id="customerPhone"
-            placeholder="10 digit mobile number"
-            maxlength="10"
-            pattern="[0-9]{10}"
-            required
-          >
-        </div>
-
-
-        <div class="form-group">
-          <label>Full Address *</label>
-
-          <textarea
-            id="customerAddress"
-            placeholder="House no., street, colony..."
-            required
-          ></textarea>
-        </div>
+  </div>
 
 
-        <div class="form-group">
-          <label>City *</label>
-
-          <input
-            type="text"
-            id="customerCity"
-            placeholder="Enter city"
-            required
-          >
-        </div>
+  <!-- TITLE -->
+  <div class="title">
+    <h2>✨ Our Products</h2>
+  </div>
 
 
-        <div class="form-group">
-          <label>State *</label>
+  <!-- PRODUCT -->
+  <div class="products" id="productGrid">
 
-          <input
-            type="text"
-            id="customerState"
-            placeholder="Enter state"
-            required
-          >
-        </div>
+    <!-- BLUE HAVEN EYELINER -->
+    <div
+      class="product-card"
+      data-category="Cosmetics"
+      data-name="Blue Haven Eyeliner"
+    >
 
+      <div class="product-image">
 
-        <div class="form-group">
-          <label>Pincode *</label>
+        <span class="discount">
+          20% OFF
+        </span>
 
-          <input
-            type="text"
-            id="customerPincode"
-            placeholder="6 digit pincode"
-            maxlength="6"
-            pattern="[0-9]{6}"
-            required
-          >
-        </div>
+        <!-- EYELINER VISUAL -->
+        <div class="eyeliner">
 
+          <div class="eyeliner-cap"></div>
 
-        <!-- ORDER SUMMARY -->
-        <div class="upi-box">
+          <div class="eyeliner-body"></div>
 
-          <h3>🧾 Order Total</h3>
-
-          <div
-            id="checkoutSummary"
-            style="
-              text-align:left;
-              margin:12px 0;
-              font-size:14px;
-            "
-          ></div>
-
-          <strong
-            id="checkoutTotal"
-            style="
-              font-size:24px;
-              color:#4b1020;
-            "
-          >
-            ₹0
-          </strong>
-
-        </div>
-
-
-        <!-- UPI -->
-        <div class="upi-box">
-
-          <h3>💳 Pay via UPI</h3>
-
-          <p style="margin-top:5px;font-size:13px;">
-            UPI ID
-          </p>
-
-          <div class="upi-id">
-            8962200566-2@ibl
+          <div class="eyeliner-text">
+            BLUE HAVEN
           </div>
 
-          <div class="upi-buttons">
+          <div class="eyeliner-tip"></div>
 
-            <button
-              type="button"
-              class="pay-btn"
-              onclick="payNow()"
-            >
-              💳 Pay Now
-            </button>
+        </div>
 
-            <button
-              type="button"
-              class="copy-btn"
-              onclick="copyUPI()"
-            >
-              📋 Copy UPI
-            </button>
+      </div>
 
-          </div>
+
+      <div class="product-info">
+
+        <div class="category-name">
+          💄 Cosmetics
+        </div>
+
+        <div class="product-name">
+          Blue Haven Eyeliner
+        </div>
+
+        <div class="description">
+          Smooth and stylish eyeliner for an elegant everyday eye look.
+        </div>
+
+
+        <div class="price">
+
+          <span class="old-price">
+            ₹249
+          </span>
+
+          <span class="new-price">
+            ₹199
+          </span>
 
         </div>
 
 
         <button
-          type="submit"
-          class="place-order"
+          class="add-cart"
+          onclick="addToCart()"
         >
-          📱 Place Order on WhatsApp
+          🛒 Add to Cart
         </button>
 
-      </form>
+      </div>
 
     </div>
+
   </div>
 
 
-  <!-- TOAST -->
-  <div
-    class="toast"
-    id="toast"
-  ></div>
+  <!-- TRUST -->
+  <div class="trust">
+
+    <div class="trust-box">
+      <div class="emoji">💰</div>
+      <h3>Best Prices</h3>
+      <p>
+        Great products at affordable prices.
+      </p>
+    </div>
+
+    <div class="trust-box">
+      <div class="emoji">🛒</div>
+      <h3>Easy Ordering</h3>
+      <p>
+        Add products to cart and checkout easily.
+      </p>
+    </div>
+
+    <div class="trust-box">
+      <div class="emoji">📱</div>
+      <h3>WhatsApp Order</h3>
+      <p>
+        Your order details go directly to our WhatsApp.
+      </p>
+    </div>
+
+  </div>
+
+</main>
 
 
-  <!-- FOOTER -->
-  <footer>
+<!-- CART MODAL -->
+<div
+  class="modal"
+  id="cartModal"
+  onclick="outsideClose(event,'cartModal')"
+>
 
-    <h2>Mayuri General Store</h2>
+  <div class="modal-box">
 
-    <p>
-      Your trusted local store for everyday needs.
-    </p>
+    <button
+      class="close"
+      onclick="closeCart()"
+    >
+      ×
+    </button>
 
-    <p style="margin-top:10px;">
-      © 2026 Mayuri General Store
-    </p>
+    <h2 class="modal-title">
+      🛒 Your Cart
+    </h2>
 
-  </footer>
+    <div id="cartItems"></div>
+
+    <div class="total">
+      <span>Total</span>
+      <span id="cartTotal">₹0</span>
+    </div>
+
+    <button
+      class="checkout"
+      onclick="openCheckout()"
+    >
+      Continue to Checkout →
+    </button>
+
+  </div>
+
+</div>
 
 
-  <script>
+<!-- CHECKOUT MODAL -->
+<div
+  class="modal"
+  id="checkoutModal"
+  onclick="outsideClose(event,'checkoutModal')"
+>
 
-    /* =========================
-       STORE SETTINGS
-    ========================= */
+  <div class="modal-box">
 
-    const WHATSAPP_NUMBER = "918223837338";
+    <button
+      class="close"
+      onclick="closeCheckout()"
+    >
+      ×
+    </button>
 
-    const UPI_ID = "8962200566-2@ibl";
+    <h2 class="modal-title">
+      📝 Customer Details
+    </h2>
 
-    const UPI_NAME = "Mayuri General Store";
+
+    <form id="orderForm">
+
+      <div class="form-group">
+        <label>Full Name *</label>
+
+        <input
+          id="name"
+          type="text"
+          placeholder="Enter your full name"
+          required
+        >
+      </div>
 
 
-    /* ======================
+      <div class="form-group">
+        <label>Mobile Number *</label>
+
+        <input
+          id="phone"
+          type="tel"
+          placeholder="10 digit mobile number"
+          maxlength="10"
+          required
+        >
+      </div>
+
+
+      <div class="form-group">
+        <label>Full Address *</label>
+
+        <textarea
+          id="address"
+          placeholder="House no., street, colony..."
+          required
+        ></textarea>
+      </div>
+
+
+      <div class="form-group">
+        <label>City *</label>
+
+        <input
+          id="city"
+          type="text"
+          placeholder="Enter city"
+          required
+        >
+      </div>
+
+
+      <div class="form-group">
+        <label>State *</label>
+
+        <input
+          id="state"
+          type="text"
+          placeholder="Enter state"
+          required
+        >
+      </div>
+
+
+      <div class="form-group">
+        <label>Pincode *</label>
+
+        <input
+          id="pincode"
+          type="text"
+          placeholder="6 digit pincode"
+          maxlength="6"
+          required
+        >
+      </div>
+
+
+      <!-- SUMMARY -->
+      <div class="summary">
+
+        <h3 style="margin-bottom:12px;">
+          🧾 Order Summary
+        </h3>
+
+        <div id="summaryItems"></div>
+
+        <div class="summary-total">
+          <span>Total</span>
+          <span id="checkoutTotal">
+            ₹0
+          </span>
+        </div>
+
+      </div>
+
+
+      <!-- UPI -->
+      <div class="upi">
+
+        <h3>
+          💳 Pay via UPI
+        </h3>
+
+        <p style="font-size:13px;margin-top:5px;">
+          UPI ID
+        </p>
+
+        <div class="upi-id">
+          8962200566-2@ibl
+        </div>
+
+
+        <div class="upi-buttons">
+
+          <button
+            type="button"
+            class="pay"
+            onclick="payNow()"
+          >
+            💳 Pay Now
+          </button>
+
+          <button
+            type="button"
+            class="copy"
+            onclick="copyUPI()"
+          >
+            📋 Copy UPI
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- WHATSAPP ORDER -->
+      <button
+        type="submit"
+        class="place-order"
+      >
+        📱 Place Order on WhatsApp
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<!-- TOAST -->
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<!-- FOOTER -->
+<footer>
+
+  <h2>
+    Mayuri General Store
+  </h2>
+
+  <p>
+    Your trusted store for everyday needs ❤️
+  </p>
+
+  <p>
+    © 2026 Mayuri General Store
+  </p>
+
+</footer>
+
+
+<script>
+
+/* ==========================
+   STORE DETAILS
+========================== */
+
+const WHATSAPP =
+  "918223837338";
+
+const UPI =
+  "8962200566-2@ibl";
+
+const STORE_NAME =
+  "Mayuri General Store";
+
+
+/* ==========================
+   PRODUCT
+========================== */
+
+const PRODUCT = {
+
+  id: "blue-haven-eyeliner",
+
+  name: "Blue Haven Eyeliner",
+
+  category: "Cosmetics",
+
+  price: 199,
+
+  oldPrice: 249
+
+};
+
+
+/* ==========================
+   CART
+========================== */
+
+let quantity = 0;
+
+
+/* ==========================
+   ADD TO CART
+========================== */
+
+function addToCart(){
+
+  quantity++;
+
+  updateCart();
+
+  showToast(
+    "✅ Blue Haven Eyeliner added to cart!"
+  );
+
+}
+
+
+/* ==========================
+   UPDATE CART
+========================== */
+
+function updateCart(){
+
+  document.getElementById(
+    "cartCount"
+  ).textContent = quantity;
+
+  document.getElementById(
+    "cartTotal"
+  ).textContent =
+    "₹" + (quantity * PRODUCT.price);
+
+}
+
+
+/* ==========================
+   OPEN CART
+========================== */
+
+function openCart(){
+
+  renderCart();
+
+  document.getElementById(
+    "cartModal"
+  ).classList.add("show");
+
+}
+
+
+/* ==========================
+   CLOSE CART
+========================== */
+
+function closeCart(){
+
+  document.getElementById(
+    "cartModal"
+  ).classList.remove("show");
+
+}
+
+
+/* ==========================
+   RENDER CART
+========================== */
+
+function renderCart(){
+
+  const box =
+    document.getElementById(
+      "cartItems"
+    );
+
+
+  if(quantity === 0){
+
+    box.innerHTML = `
+      <div style="
+        text-align:center;
+        padding:30px 10px;
+      ">
+        <div style="font-size:45px;">
+          🛒
+        </div>
+
+        <h3>Cart is Empty</h3>
+
+        <p style="
+          color:#777;
+          margin-top:7px;
+        ">
+          Add a product to continue.
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+
+  box.innerHTML = `
+
+    <div class="cart-item">
+
+      <div class="cart-info">
+
+        <div class="cart-name">
+          Blue Haven Eyeliner
+        </div>
+
+        <div class="cart-price">
+          ₹199 × ${quantity}
+        </div>
+
+      </div>
+
+
+      <div class="quantity">
+
+        <button onclick="changeQuantity(-1)">
+          −
+        </button>
+
+        <strong>
+          ${quantity}
+        </strong>
+
+        <button onclick="changeQuantity(1)">
+          +
+        </button>
+
+      </div>
+
+
+      <button
+        class="delete"
+        onclick="removeProduct()"
+      >
+        🗑️
+      </button>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ==========================
+   QUANTITY
+========================== */
+
+function changeQuantity(change){
+
+  quantity += change;
+
+  if(quantity < 0){
+    quantity = 0;
+  }
+
+  updateCart();
+
+  renderCart();
+
+  renderCheckout();
+
+}
+
+
+/* ==========================
+   REMOVE
+========================== */
+
+function removeProduct(){
+
+  quantity = 0;
+
+  updateCart();
+
+  renderCart();
+
+  renderCheckout();
+
+  showToast(
+    "Product removed from cart."
+  );
+
+}
+
+
+/* ==========================
+   CHECKOUT
+==========================
