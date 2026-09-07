@@ -1,0 +1,11 @@
+{
+  "name": "Mayuri General Store",
+  "short_name": "Mayuri Store",
+  "description": "Mayuri General Store - Online Shopping",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fff7f9",
+  "theme_color": "#4b1020",
+  "orientation": "portrait",
+  "icons": []
+}
